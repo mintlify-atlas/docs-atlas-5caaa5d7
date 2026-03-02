@@ -1,0 +1,145 @@
+---
+title: 'Homeserver Configuration'
+description: 'Configure default and custom homeservers for your Sable instance'
+---
+
+Sable allows you to configure which Matrix homeservers users can connect to, set a default homeserver, and control whether users can add custom homeservers.
+
+## Default Homeserver
+
+The `defaultHomeserver` field specifies which homeserver from your list is pre-selected for users during login and registration.
+
+<ParamField path="defaultHomeserver" type="number" default="0">
+  Zero-based index pointing to a homeserver in the `homeserverList` array.
+</ParamField>
+
+### Example
+
+```json
+{
+  "defaultHomeserver": 0,
+  "homeserverList": ["matrix.org", "mozilla.org", "unredacted.org", "sable.moe", "kendama.moe"]
+}
+```
+
+In this example, `"matrix.org"` (index 0) is the default homeserver.
+
+To make `"sable.moe"` the default instead:
+
+```json
+{
+  "defaultHomeserver": 3,
+  "homeserverList": ["matrix.org", "mozilla.org", "unredacted.org", "sable.moe", "kendama.moe"]
+}
+```
+
+## Homeserver List
+
+The `homeserverList` defines which homeservers appear in the dropdown menu during login and registration.
+
+<ParamField path="homeserverList" type="array" default="[]">
+  Array of homeserver domain names. Users can select from this list when logging in or registering.
+</ParamField>
+
+### Adding Homeservers
+
+Simply add domain names to the array:
+
+```json
+{
+  "homeserverList": [
+    "matrix.org",
+    "mozilla.org",
+    "unredacted.org",
+    "sable.moe",
+    "kendama.moe",
+    "your-homeserver.com"
+  ]
+}
+```
+
+<Note>
+  Only include the domain name, not the full URL. For example, use `"matrix.org"` not `"https://matrix.org"`.
+</Note>
+
+### Removing Homeservers
+
+Remove any homeserver you don't want to offer:
+
+```json
+{
+  "homeserverList": ["your-homeserver.com"]
+}
+```
+
+## Custom Homeservers
+
+The `allowCustomHomeservers` field controls whether users can manually enter homeserver URLs that aren't in your predefined list.
+
+<ParamField path="allowCustomHomeservers" type="boolean" default="true">
+  When `true`, users can type in any homeserver URL. When `false`, users are restricted to the `homeserverList`.
+</ParamField>
+
+### Allowing Custom Homeservers
+
+This is the default and recommended setting for public instances:
+
+```json
+{
+  "allowCustomHomeservers": true
+}
+```
+
+With this setting, users can:
+- Select from the `homeserverList`
+- Enter any custom homeserver URL
+
+### Restricting to Predefined Homeservers
+
+For controlled environments or private deployments:
+
+```json
+{
+  "allowCustomHomeservers": false
+}
+```
+
+With this setting, users can only select from the `homeserverList`.
+
+## Complete Configuration Example
+
+### Public Instance
+
+For a public Sable instance that allows maximum flexibility:
+
+```json
+{
+  "defaultHomeserver": 0,
+  "homeserverList": ["matrix.org", "mozilla.org", "unredacted.org"],
+  "allowCustomHomeservers": true
+}
+```
+
+### Private/Corporate Instance
+
+For a corporate or private deployment restricted to specific homeservers:
+
+```json
+{
+  "defaultHomeserver": 0,
+  "homeserverList": ["company.com", "partner.com"],
+  "allowCustomHomeservers": false
+}
+```
+
+### Single Homeserver Instance
+
+For an instance dedicated to a single homeserver:
+
+```json
+{
+  "defaultHomeserver": 0,
+  "homeserverList": ["your-homeserver.com"],
+  "allowCustomHomeservers": false
+}
+```

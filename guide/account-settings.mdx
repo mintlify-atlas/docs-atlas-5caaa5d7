@@ -1,0 +1,151 @@
+---
+title: Account Settings
+description: Manage your Sable account profile, sessions, and account data
+---
+
+## Overview
+
+The Account settings page allows you to customize your profile, manage sessions, and control your account data.
+
+## Profile Settings
+
+### Display Name
+
+Your display name is shown to other users across all rooms and spaces.
+
+1. Navigate to **Settings > Account**
+2. Find the **Display Name** field under Profile
+3. Enter your desired name
+4. Click **Save** to update
+
+### Avatar
+
+Set a profile picture that appears throughout the app:
+
+1. Click **Upload** under the Avatar section
+2. Select an image file from your device
+3. Use the image editor to crop and adjust
+4. The image uploads automatically after editing
+
+To remove your avatar, click **Remove** next to the Upload button.
+
+### Profile Banner
+
+Add a banner image to your profile (compatible with Commet format):
+
+- Click **Upload Banner** to add a new banner
+- Preview appears immediately
+- Click **Remove** to delete your banner
+
+### Extended Profile
+
+Sable supports additional profile fields:
+
+**Global Name Color**
+- Set a custom color for your username across all rooms
+- Uses the `moe.sable.app.name_color` field
+- Can be overridden by room-specific colors
+
+**Pronouns**
+- Add up to 3 pronoun sets (desktop) or 1 (mobile)
+- Follows [MSC4247](https://github.com/matrix-org/matrix-spec-proposals/pull/4247) format
+- Uses `io.fsky.nyx.pronouns` field
+- Displays as pills next to your name
+
+**Timezone**
+- Set your timezone to help others know when you're available
+- Uses both `us.cloke.msc4175.tz` and `m.tz` fields
+- Must be a valid timezone identifier
+
+**Bio**
+- Write a biography up to 1024 characters
+- Supports HTML formatting via the editor
+- Compatible with both Sable and Commet formats
+- Uses `moe.sable.app.bio` and `chat.commet.profile_bio` fields
+
+## Account Switcher
+
+<Note>
+The account switcher can be disabled in your `config.json` file by setting `"accountSwitcher": false`.
+</Note>
+
+The account switcher allows you to manage multiple Matrix accounts within Sable:
+
+- Switch between accounts without logging out
+- Each account maintains its own session
+- Added in version 1.0.0 by TastelessVoid
+
+## Matrix ID
+
+Your Matrix ID section displays:
+- Your full Matrix user ID
+- Server information
+- Account creation details
+
+## Contact Information
+
+Manage email addresses and other contact methods associated with your account.
+
+## Blocked Users
+
+View and manage users you've blocked:
+
+1. Navigate to **Account > Block Users**
+2. See a list of all blocked users
+3. Click to unblock any user
+
+<Note>
+This section was previously located under Notifications settings.
+</Note>
+
+## Sessions Management
+
+Manage active sessions and devices connected to your account. See [Security](/guide/security) for detailed device and session management.
+
+## Backup and Restore
+
+Sable provides both cloud and local backup options for your encryption keys:
+
+### Cloud Backup
+
+Automatically backs up your encryption keys to your homeserver:
+- Enabled after device verification
+- Allows message access on new devices
+- Protected by your security key/passphrase
+
+### Local Backup
+
+<Accordion title="How to export encryption keys locally">
+
+1. Navigate to **Settings > Devices > Local Backup**
+2. Click **Expand** under "Export Messages Data"
+3. Create and confirm a password
+4. Click **Export**
+5. Save the `cinny-keys.txt` file securely
+
+<Warning>
+Store this file safely! It contains your encryption keys and is protected only by your chosen password.
+</Warning>
+
+</Accordion>
+
+<Accordion title="How to import encryption keys">
+
+1. Navigate to **Settings > Devices > Local Backup**
+2. Click **Import** under "Import Messages Data"
+3. Select your `cinny-keys.txt` file
+4. Enter the password you used during export
+5. Click **Decrypt**
+
+Your message history will be accessible once decryption completes.
+
+</Accordion>
+
+## Account Capabilities
+
+Some profile features may be restricted by your homeserver:
+
+- **Avatar uploads** can be disabled via `m.set_avatar_url` capability
+- **Display name changes** can be disabled via `m.set_displayname` capability
+
+If these features are disabled, the respective controls will be grayed out.

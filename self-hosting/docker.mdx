@@ -1,0 +1,198 @@
+---
+title: Docker Deployment
+description: Deploy Sable using Docker with pre-configured nginx
+---
+
+## Overview
+
+The Docker deployment uses a multi-stage build process to create a lightweight production image with nginx serving the Sable application.
+
+## Dockerfile Breakdown
+
+The Dockerfile consists of two stages:
+
+### Builder Stage
+
+The first stage builds the application:
+
+```dockerfile
+FROM node:24.13.1-alpine AS builder
+
+WORKDIR /src
+
+COPY .npmrc package.json package-lock.json /src/
+RUN npm ci
+COPY . /src/
+ENV NODE_OPTIONS=--max_old_space_size=4096
+RUN npm run build
+```
+
+- Uses Node.js 24.13.1 Alpine image for smaller size
+- Installs dependencies with `npm ci` for reproducible builds
+- Sets heap size to 4GB to handle large builds
+- Compiles the application to the `dist/` directory
+
+### App Stage
+
+The second stage creates the production image:
+
+```dockerfile
+FROM nginx:1.29.5-alpine
+
+COPY --from=builder /src/dist /app
+COPY --from=builder /src/docker-nginx.conf /etc/nginx/conf.d/default.conf
+
+RUN rm -rf /usr/share/nginx/html \
+  && ln -s /app /usr/share/nginx/html
+```
+
+- Uses nginx 1.29.5 Alpine image
+- Copies built application from builder stage
+- Includes custom nginx configuration
+- Creates symbolic link for nginx to serve the app
+
+## Building the Docker Image
+
+<Steps>
+  <Step title="Clone the repository">
+    ```bash
+    git clone https://github.com/7w1/sable.git
+    cd sable
+    ```
+  </Step>
+  
+  <Step title="Build the Docker image">
+    ```bash
+    docker build -t sable:latest .
+    ```
+    
+    This creates a Docker image tagged as `sable:latest`.
+  </Step>
+  
+  <Step title="Run the container">
+    ```bash
+    docker run -d -p 80:80 --name sable sable:latest
+    ```
+    
+    This starts the container and maps port 80 to your host.
+  </Step>
+</Steps>
+
+## Docker Run Options
+
+<CodeGroup>
+```bash Basic
+docker run -d -p 80:80 --name sable sable:latest
+```
+
+```bash Custom Port
+docker run -d -p 8080:80 --name sable sable:latest
+```
+
+```bash With Volume Mount
+docker run -d -p 80:80 \
+  -v $(pwd)/config.json:/app/config.json \
+  --name sable sable:latest
+```
+
+```bash With Restart Policy
+docker run -d -p 80:80 \
+  --restart unless-stopped \
+  --name sable sable:latest
+```
+</CodeGroup>
+
+## Docker Compose
+
+For easier management, use Docker Compose:
+
+```yaml docker-compose.yml
+version: '3.8'
+
+services:
+  sable:
+    build: .
+    ports:
+      - "80:80"
+    volumes:
+      - ./config.json:/app/config.json:ro
+    restart: unless-stopped
+```
+
+Run with:
+
+```bash
+docker compose up -d
+```
+
+## Configuration
+
+### Custom config.json
+
+To use a custom configuration file, mount it as a volume:
+
+```bash
+docker run -d -p 80:80 \
+  -v /path/to/your/config.json:/app/config.json:ro \
+  --name sable sable:latest
+```
+
+### Environment Variables
+
+The build process uses the following environment variable:
+
+- `NODE_OPTIONS=--max_old_space_size=4096`: Increases Node.js heap size to 4GB for the build process
+
+<Warning>
+  The NODE_OPTIONS environment variable is only used during the build stage and does not affect the running application.
+</Warning>
+
+## Nginx Configuration
+
+The Docker image includes a pre-configured nginx setup from `docker-nginx.conf`. The configuration:
+
+- Listens on port 80 (IPv4 and IPv6)
+- Serves the application from `/usr/share/nginx/html`
+- Handles routing for single-page application
+- Properly serves static assets and service workers
+
+For details on the nginx configuration, see the [Nginx Configuration guide](/self-hosting/nginx).
+
+## Updating
+
+To update your Sable deployment:
+
+<Steps>
+  <Step title="Pull latest changes">
+    ```bash
+    git pull origin main
+    ```
+  </Step>
+  
+  <Step title="Rebuild the image">
+    ```bash
+    docker build -t sable:latest .
+    ```
+  </Step>
+  
+  <Step title="Stop and remove old container">
+    ```bash
+    docker stop sable
+    docker rm sable
+    ```
+  </Step>
+  
+  <Step title="Start new container">
+    ```bash
+    docker run -d -p 80:80 --name sable sable:latest
+    ```
+  </Step>
+</Steps>
+
+Or with Docker Compose:
+
+```bash
+docker compose down
+docker compose build
+docker compose up -d
+```

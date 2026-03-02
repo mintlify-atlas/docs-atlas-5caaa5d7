@@ -1,0 +1,488 @@
+---
+title: Matrix SDK Integration
+description: How Sable integrates matrix-js-sdk for Matrix protocol support
+---
+
+Sable uses the official **matrix-js-sdk** (v38.4.0) to implement the Matrix protocol, with additional integrations for widgets and end-to-end encryption.
+
+## SDK Dependencies
+
+From `package.json`:
+
+```json
+{
+  "dependencies": {
+    "matrix-js-sdk": "^38.4.0",
+    "matrix-widget-api": "1.13.0"
+  }
+}
+```
+
+### Crypto Implementation
+
+Sable uses the modern **Rust crypto** backend:
+
+- **@matrix-org/matrix-sdk-crypto-wasm** - WebAssembly-based encryption
+- Provides E2EE (end-to-end encryption)
+- Replaces the legacy JavaScript crypto implementation
+- Significantly faster and more secure
+
+## Import Boundary
+
+All Matrix SDK imports go through `src/types/matrix-sdk.ts` for consistency:
+
+```typescript
+// src/types/matrix-sdk.ts
+export * from 'matrix-js-sdk/lib/client'
+export * from 'matrix-js-sdk/lib/models/event'
+export * from 'matrix-js-sdk/lib/models/room'
+export { createClient } from 'matrix-js-sdk/lib/matrix'
+export * from 'matrix-js-sdk/lib/store/indexeddb'
+export * from 'matrix-js-sdk/lib/crypto/store/indexeddb-crypto-store'
+// ...more exports
+```
+
+**Usage**:
+```typescript
+// ✅ Good: Import from types boundary
+import { MatrixClient, Room, MatrixEvent } from '$types/matrix-sdk'
+
+// ❌ Bad: Don't import directly from matrix-js-sdk
+import { MatrixClient } from 'matrix-js-sdk'
+```
+
+## Client Initialization
+
+Client initialization is handled in `src/client/initMatrix.ts`.
+
+### Creating a Client
+
+```typescript
+import {
+  createClient,
+  MatrixClient,
+  IndexedDBStore,
+  IndexedDBCryptoStore,
+} from '$types/matrix-sdk'
+import { Session } from '$state/sessions'
+
+const buildClient = async (session: Session): Promise<MatrixClient> => {
+  const storeName = getSessionStoreName(session)
+
+  // Create IndexedDB store for sync data
+  const indexedDBStore = new IndexedDBStore({
+    indexedDB: global.indexedDB,
+    localStorage: global.localStorage,
+    dbName: storeName.sync,
+  })
+
+  // Create IndexedDB store for legacy crypto
+  const legacyCryptoStore = new IndexedDBCryptoStore(
+    global.indexedDB,
+    storeName.crypto
+  )
+
+  // Create Matrix client
+  const mx = createClient({
+    baseUrl: session.baseUrl,
+    accessToken: session.accessToken,
+    userId: session.userId,
+    deviceId: session.deviceId,
+    store: indexedDBStore,
+    cryptoStore: legacyCryptoStore,
+    timelineSupport: true,
+    cryptoCallbacks: cryptoCallbacks,
+    verificationMethods: ['m.sas.v1'],
+  })
+
+  await indexedDBStore.startup()
+  return mx
+}
+```
+
+### Initializing Rust Crypto
+
+After client creation, initialize the Rust crypto backend:
+
+```typescript
+export const initClient = async (session: Session): Promise<MatrixClient> => {
+  const storeName = getSessionStoreName(session)
+  const mx = await buildClient(session)
+
+  // Initialize Rust crypto (matrix-sdk-crypto-wasm)
+  await mx.initRustCrypto({
+    cryptoDatabasePrefix: storeName.rustCryptoPrefix,
+  })
+
+  mx.setMaxListeners(50)  // Increase event listener limit
+  return mx
+}
+```
+
+### Starting the Client
+
+Once initialized, start the sync loop:
+
+```typescript
+export const startClient = async (mx: MatrixClient) => {
+  await mx.startClient({
+    lazyLoadMembers: true,  // Only load members on-demand
+  })
+}
+```
+
+**Full Flow**:
+```typescript
+import { initClient, startClient } from '$client/initMatrix'
+import { Session } from '$state/sessions'
+
+const session: Session = {
+  baseUrl: 'https://matrix.org',
+  accessToken: '...',
+  userId: '@user:matrix.org',
+  deviceId: 'ABCDEFG',
+}
+
+const mx = await initClient(session)
+await startClient(mx)
+
+// Client is now syncing
+```
+
+## Session Storage
+
+Sable supports multiple accounts with isolated storage:
+
+```typescript
+export type SessionStoreName = {
+  sync: string              // IndexedDB for timeline/state
+  crypto: string            // Legacy crypto store
+  rustCryptoPrefix: string  // Prefix for Rust crypto DB
+}
+
+export const getSessionStoreName = (session: Session): SessionStoreName => {
+  if (session.fallbackSdkStores) {
+    // Legacy single-account storage
+    return {
+      sync: 'web-sync-store',
+      crypto: 'crypto-store',
+      rustCryptoPrefix: 'matrix-js-sdk',
+    }
+  }
+
+  // Multi-account: unique stores per userId
+  return {
+    sync: `sync${session.userId}`,
+    crypto: `crypto${session.userId}`,
+    rustCryptoPrefix: `sync${session.userId}`,
+  }
+}
+```
+
+### Store Cleanup
+
+Before initialization, clean up mismatched stores:
+
+```typescript
+import { clearMismatchedStores } from '$client/initMatrix'
+
+// Call once on app startup
+await clearMismatchedStores()
+```
+
+This prevents errors when:
+- User data doesn't match session
+- Old accounts have orphaned databases
+- Store names conflict
+
+## E2EE (End-to-End Encryption)
+
+### Crypto Callbacks
+
+Handle secret storage and cross-signing:
+
+```typescript
+// src/client/secretStorageKeys.js
+export const cryptoCallbacks = {
+  // Called when secret storage key is needed
+  getSecretStorageKey: async ({ keys }, name) => {
+    // Prompt user for passphrase or key
+    const key = await promptForSecretStorageKey(keys, name)
+    return [name, key]
+  },
+}
+```
+
+### Device Verification
+
+Sable supports SAS (Short Authentication String) verification:
+
+```typescript
+import { useMatrixClient } from '$hooks/useMatrixClient'
+
+function DeviceVerification() {
+  const mx = useMatrixClient()
+
+  const startVerification = async (userId: string, deviceId: string) => {
+    const request = await mx.requestVerification(
+      userId,
+      [deviceId]
+    )
+
+    request.on('show_sas', (sas) => {
+      // Display emoji/decimal SAS to user
+      console.log('SAS:', sas.sas.emoji)
+    })
+
+    await request.start('m.sas.v1')
+  }
+}
+```
+
+### Encryption Status
+
+Check if a room is encrypted:
+
+```typescript
+import { useMatrixClient } from '$hooks/useMatrixClient'
+
+function RoomEncryptionStatus({ roomId }: { roomId: string }) {
+  const mx = useMatrixClient()
+  const room = mx.getRoom(roomId)
+  
+  const isEncrypted = room?.hasEncryptionStateEvent() ?? false
+  
+  return <Text>{isEncrypted ? '🔒 Encrypted' : '🔓 Not encrypted'}</Text>
+}
+```
+
+## Event Handling
+
+Sable uses hooks to subscribe to Matrix events reactively.
+
+### Room Events
+
+Listen for timeline events:
+
+```typescript
+import { useRoomEvent } from '$hooks/useRoomEvent'
+
+function LatestMessage({ room }: { room: Room }) {
+  const latestEvent = useRoomEvent(room, 'm.room.message')
+  
+  if (!latestEvent) return null
+  
+  const content = latestEvent.getContent()
+  return <Text>{content.body}</Text>
+}
+```
+
+### State Events
+
+Listen for state changes:
+
+```typescript
+import { useStateEvent } from '$hooks/useStateEvent'
+
+function RoomTopic({ room }: { room: Room }) {
+  const topicEvent = useStateEvent(room, 'm.room.topic')
+  
+  const topic = topicEvent?.getContent()?.topic || 'No topic set'
+  return <Text>{topic}</Text>
+}
+```
+
+### Custom Event Listeners
+
+For more control, use Matrix client events directly:
+
+```typescript
+import { useEffect } from 'react'
+import { useMatrixClient } from '$hooks/useMatrixClient'
+import { MatrixEvent } from '$types/matrix-sdk'
+
+function SyncStateIndicator() {
+  const mx = useMatrixClient()
+  const [state, setState] = useState('SYNCING')
+
+  useEffect(() => {
+    const onSync = (state: string) => setState(state)
+    
+    mx.on('sync', onSync)
+    return () => { mx.off('sync', onSync) }
+  }, [mx])
+
+  return <Text>Sync state: {state}</Text>
+}
+```
+
+## Widget Integration
+
+Sable supports Matrix widgets via **matrix-widget-api**:
+
+```typescript
+import { WidgetApi } from 'matrix-widget-api'
+
+function WidgetContainer({ widgetUrl }: { widgetUrl: string }) {
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const [widgetApi, setWidgetApi] = useState<WidgetApi | null>(null)
+
+  useEffect(() => {
+    if (!iframeRef.current) return
+
+    const api = new WidgetApi(widgetUrl, iframeRef.current)
+    api.start()
+    setWidgetApi(api)
+
+    return () => api.stop()
+  }, [widgetUrl])
+
+  return <iframe ref={iframeRef} src={widgetUrl} />
+}
+```
+
+## Build Configuration
+
+### Vite Setup for WASM
+
+The Vite config handles WebAssembly loading:
+
+```typescript
+// vite.config.ts
+import { wasm } from '@rollup/plugin-wasm'
+import topLevelAwait from 'vite-plugin-top-level-await'
+import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
+
+export default defineConfig({
+  plugins: [
+    wasm(),  // Support WASM files
+    topLevelAwait(),  // Support top-level await for crypto init
+    // ...other plugins
+  ],
+  optimizeDeps: {
+    include: ['matrix-widget-api'],
+    esbuildOptions: {
+      define: { global: 'globalThis' },
+      plugins: [
+        NodeGlobalsPolyfillPlugin({ buffer: true }),
+      ],
+    },
+  },
+})
+```
+
+### Service Worker for Media
+
+Authenticated media requests are handled by the service worker:
+
+```typescript
+// src/sw.ts
+self.addEventListener('fetch', (event: FetchEvent) => {
+  const { url } = event.request
+  
+  // Intercept Matrix media requests
+  if (mediaPath(url)) {
+    const session = sessions.get(event.clientId)
+    
+    if (session) {
+      event.respondWith(
+        fetch(url, {
+          headers: {
+            Authorization: `Bearer ${session.accessToken}`,
+          },
+        })
+      )
+    }
+  }
+})
+```
+
+This allows authenticated media downloads without exposing tokens to components.
+
+## Common Operations
+
+### Sending Messages
+
+```typescript
+import { useMatrixClient } from '$hooks/useMatrixClient'
+
+function sendTextMessage(roomId: string, text: string) {
+  const mx = useMatrixClient()
+  
+  await mx.sendMessage(roomId, {
+    msgtype: 'm.text',
+    body: text,
+  })
+}
+```
+
+### Uploading Files
+
+```typescript
+async function uploadAndSendFile(
+  mx: MatrixClient,
+  roomId: string,
+  file: File
+) {
+  // Upload to content repository
+  const { content_uri } = await mx.uploadContent(file, {
+    onlyContentUri: true,
+  })
+
+  // Send m.file event
+  await mx.sendMessage(roomId, {
+    msgtype: 'm.file',
+    body: file.name,
+    url: content_uri,
+    info: {
+      mimetype: file.type,
+      size: file.size,
+    },
+  })
+}
+```
+
+### Reading Receipts
+
+```typescript
+async function markAsRead(mx: MatrixClient, room: Room) {
+  const lastEvent = room.timeline[room.timeline.length - 1]
+  if (!lastEvent) return
+
+  await mx.sendReadReceipt(lastEvent)
+}
+```
+
+### Typing Indicators
+
+```typescript
+import { useTypingStatusUpdater } from '$hooks/useTypingStatusUpdater'
+
+function MessageComposer({ roomId }: { roomId: string }) {
+  const updateTyping = useTypingStatusUpdater(roomId)
+
+  const handleChange = (text: string) => {
+    updateTyping(text.length > 0)  // true if typing, false if not
+  }
+}
+```
+
+## Best Practices
+
+1. **Always use the import boundary** - Import from `$types/matrix-sdk`, not `matrix-js-sdk`
+2. **Initialize crypto** - Always call `initRustCrypto()` after creating a client
+3. **Clean up listeners** - Remove event listeners in `useEffect` cleanup
+4. **Handle sync states** - Listen for `sync` events to show connection status
+5. **Use hooks** - Prefer Sable's Matrix hooks over direct SDK usage
+6. **Lazy load members** - Enable `lazyLoadMembers` to reduce memory usage
+7. **Persist sessions** - Store sessions in localStorage for multi-account support
+8. **Verify devices** - Implement device verification flows for security
+9. **Handle errors** - Matrix operations can fail; always handle rejections
+10. **Test with encryption** - Ensure features work in encrypted rooms
+
+## Resources
+
+- [matrix-js-sdk Documentation](https://matrix-org.github.io/matrix-js-sdk/)
+- [Matrix Spec](https://spec.matrix.org/)
+- [Matrix Widget API](https://github.com/matrix-org/matrix-widget-api)
+- [Rust Crypto Migration Guide](https://github.com/matrix-org/matrix-js-sdk/blob/develop/CRYPTO_MIGRATION.md)

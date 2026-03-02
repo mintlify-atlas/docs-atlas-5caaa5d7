@@ -1,0 +1,253 @@
+---
+title: Subdirectory Deployment
+description: Deploy Sable on a subdirectory path like /app or /sable
+---
+
+## Overview
+
+By default, Sable is configured to be served from the root path (`/`) of your domain. However, you may want to deploy it on a subdirectory like `https://example.com/app` or `https://example.com/sable`.
+
+<Warning>
+  Subdirectory deployment requires rebuilding the application with a modified base path. You cannot simply move the built files to a subdirectory.
+</Warning>
+
+## Configuration
+
+### Update build.config.ts
+
+Before building the application, modify the `base` path in `build.config.ts`:
+
+<CodeGroup>
+```typescript Root Path (Default)
+export default {
+  base: '/',
+};
+```
+
+```typescript Subdirectory Path
+export default {
+  base: '/app',
+};
+```
+
+```typescript Another Example
+export default {
+  base: '/sable',
+};
+```
+</CodeGroup>
+
+## Build Process
+
+After updating `build.config.ts`, rebuild the application:
+
+<Steps>
+  <Step title="Update base path">
+    Edit `build.config.ts` and set the `base` property to your desired subdirectory path.
+    
+    ```typescript
+    export default {
+      base: '/app',
+    };
+    ```
+  </Step>
+  
+  <Step title="Install dependencies">
+    ```bash
+    npm ci
+    ```
+  </Step>
+  
+  <Step title="Build the application">
+    ```bash
+    npm run build
+    ```
+    
+    The build process will use the base path from `build.config.ts`.
+  </Step>
+  
+  <Step title="Deploy to server">
+    Copy the `dist/` directory to your web server at the configured subdirectory path.
+  </Step>
+</Steps>
+
+## Web Server Configuration
+
+### Nginx Configuration
+
+When serving from a subdirectory, update your nginx configuration:
+
+```nginx
+server {
+  listen 80;
+  server_name example.com;
+
+  # Other content at root
+  location / {
+    root /var/www/html;
+    index index.html;
+  }
+
+  # Sable at /app subdirectory
+  location /app {
+    alias /var/www/sable;
+    try_files $uri $uri/ /app/index.html;
+    
+    # Handle config and manifest
+    location = /app/config.json {
+      alias /var/www/sable/config.json;
+    }
+    
+    location = /app/manifest.json {
+      alias /var/www/sable/manifest.json;
+    }
+    
+    # Service workers
+    location = /app/sw.js {
+      alias /var/www/sable/sw.js;
+    }
+    
+    location = /app/pdf.worker.min.js {
+      alias /var/www/sable/pdf.worker.min.js;
+    }
+  }
+}
+```
+
+<Warning>
+  When using `alias` in nginx, ensure the path does not end with a trailing slash if the location ends with a slash, and vice versa.
+</Warning>
+
+### Apache Configuration
+
+```apache
+<VirtualHost *:80>
+  ServerName example.com
+  DocumentRoot /var/www/html
+
+  # Sable at /app subdirectory
+  Alias /app /var/www/sable
+  
+  <Directory /var/www/sable>
+    Options -Indexes +FollowSymLinks
+    AllowOverride All
+    Require all granted
+    
+    # Enable rewrite engine
+    RewriteEngine On
+    
+    # Serve files if they exist
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    # Otherwise route to index.html
+    RewriteRule ^ /app/index.html [L]
+  </Directory>
+</VirtualHost>
+```
+
+## Docker Deployment
+
+For Docker deployments with a subdirectory:
+
+<Steps>
+  <Step title="Update build.config.ts">
+    Before building the Docker image, modify `build.config.ts` with your desired base path.
+  </Step>
+  
+  <Step title="Build Docker image">
+    ```bash
+    docker build -t sable:latest .
+    ```
+  </Step>
+  
+  <Step title="Run with path prefix">
+    ```bash
+    docker run -d -p 8080:80 --name sable sable:latest
+    ```
+  </Step>
+  
+  <Step title="Configure reverse proxy">
+    Configure your reverse proxy to forward `/app` to the Docker container.
+  </Step>
+</Steps>
+
+### Nginx Reverse Proxy for Subdirectory
+
+```nginx
+server {
+  listen 80;
+  server_name example.com;
+
+  location /app {
+    proxy_pass http://localhost:8080/app;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
+}
+```
+
+## Common Examples
+
+### Deploy on /app
+
+```typescript build.config.ts
+export default {
+  base: '/app',
+};
+```
+
+Access at: `https://example.com/app`
+
+### Deploy on /matrix/sable
+
+```typescript build.config.ts
+export default {
+  base: '/matrix/sable',
+};
+```
+
+Access at: `https://example.com/matrix/sable`
+
+### Deploy on /clients/web
+
+```typescript build.config.ts
+export default {
+  base: '/clients/web',
+};
+```
+
+Access at: `https://example.com/clients/web`
+
+## Troubleshooting
+
+### Assets Not Loading
+
+If assets are not loading correctly:
+
+1. Verify the base path in `build.config.ts` matches your deployment path
+2. Rebuild the application after changing `build.config.ts`
+3. Check browser console for 404 errors
+4. Ensure nginx/Apache configuration uses correct paths
+
+### Routing Issues
+
+If client-side routing is not working:
+
+1. Ensure your web server is configured to route all requests to `index.html`
+2. Check that the `try_files` directive (nginx) or `RewriteRule` (Apache) is correct
+3. Verify the base path includes the leading slash (e.g., `/app` not `app`)
+
+### Service Worker Not Registering
+
+If the service worker fails to register:
+
+1. Check that `sw.js` is accessible at the correct path
+2. Ensure HTTPS is enabled (service workers require secure context)
+3. Verify the base path is correct in `build.config.ts`
+
+<Warning>
+  Always rebuild the application after modifying `build.config.ts`. Simply copying the existing build to a subdirectory will not work.
+</Warning>

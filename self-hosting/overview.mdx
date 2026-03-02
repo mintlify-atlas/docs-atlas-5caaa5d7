@@ -1,0 +1,94 @@
+---
+title: Self-Hosting Overview
+description: Learn how to host Sable on your own infrastructure
+---
+
+## Why Self-Host
+
+Self-hosting Sable gives you complete control over your Matrix client deployment. You can:
+
+- Customize the default homeserver and explore pages
+- Configure account switcher settings
+- Deploy on your own domain or subdirectory
+- Maintain privacy and data sovereignty
+- Apply custom branding and modifications
+
+## Requirements
+
+Before deploying Sable, ensure you have the following:
+
+- **Node.js**: Version 24.x
+- **npm**: Version 11.x
+- **Web server**: nginx or similar (for production)
+- **Git**: To clone the repository
+
+<Warning>
+  Sable requires specific versions of Node.js and npm. Using a version manager like [fnm](https://github.com/Schniz/fnm) or [nvm](https://github.com/nvm-sh/nvm) is recommended.
+</Warning>
+
+## Deployment Options
+
+Sable can be deployed using several methods:
+
+### Docker Deployment
+
+The easiest way to deploy Sable is using Docker. This method packages the application with nginx in a single container.
+
+- Pre-configured nginx setup
+- Minimal manual configuration
+- Easy updates and rollbacks
+
+See the [Docker deployment guide](/self-hosting/docker) for detailed instructions.
+
+### Manual Build
+
+For more control, you can build Sable manually and serve it with your own web server.
+
+<Steps>
+  <Step title="Clone the repository">
+    Download the Sable repository to your local machine or server.
+  </Step>
+  
+  <Step title="Install dependencies">
+    ```bash
+    npm ci
+    ```
+  </Step>
+  
+  <Step title="Build the application">
+    ```bash
+    npm run build
+    ```
+    
+    This compiles the app into the `dist/` directory.
+  </Step>
+  
+  <Step title="Deploy the dist directory">
+    Copy the `dist/` directory to your web server and configure it to serve the static files.
+  </Step>
+</Steps>
+
+## Configuration
+
+After building Sable, you can customize several settings:
+
+- **Default homeservers**: Configure in `config.json`
+- **Explore pages**: Also defined in `config.json`
+- **Account switcher**: Enable or disable in `config.json`
+- **Base path**: For subdirectory deployments, modify `build.config.ts` before building
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Docker Deployment" icon="docker" href="/self-hosting/docker">
+    Deploy Sable using Docker with pre-configured nginx
+  </Card>
+  
+  <Card title="Nginx Configuration" icon="server" href="/self-hosting/nginx">
+    Configure nginx for reverse proxy and SSL/TLS
+  </Card>
+  
+  <Card title="Subdirectory Deployment" icon="folder" href="/self-hosting/subdirectory">
+    Deploy Sable on a subdirectory path
+  </Card>
+</CardGroup>

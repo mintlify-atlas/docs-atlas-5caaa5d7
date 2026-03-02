@@ -1,0 +1,357 @@
+---
+title: Appearance Settings
+description: Customize Sable's theme, layout, fonts, and visual appearance
+---
+
+## Overview
+
+Sable offers extensive appearance customization options to make the client your own. From themes and colors to fonts and layout, you can adjust nearly every visual aspect.
+
+## Theme Selection
+
+### System Theme
+
+Automatically sync with your operating system's light/dark mode:
+
+1. Navigate to **Settings > Appearance > Theme**
+2. Enable **System Theme**
+3. Set your preferred light and dark themes
+4. Sable will switch between them based on your system settings
+
+### Manual Theme Selection
+
+Choose a specific theme regardless of system settings:
+
+1. Navigate to **Settings > Appearance > Theme**
+2. Disable **System Theme** (if enabled)
+3. Select from the **Manual Theme** dropdown
+
+### Available Themes
+
+Sable includes multiple built-in themes:
+
+**Light Themes:**
+- Sable Light (default)
+- Cinny Light
+
+**Dark Themes:**
+- Sable Dark (default)
+- Cinny Dark
+- Gruvbox (added in v1.2.3)
+- Rosé Pine (added in v1.2.2)
+
+<Note>
+New themes are regularly added through community contributions. Check the [changelog](https://github.com/7w1/sable/blob/main/CHANGELOG.md) for the latest additions.
+</Note>
+
+### Monochrome Mode
+
+For a more subdued appearance:
+
+1. Navigate to **Settings > Appearance > Theme**
+2. Toggle **Monochrome Mode** on
+
+## Layout Options
+
+### Message Layout
+
+Choose how messages are displayed in the timeline:
+
+1. Navigate to **Settings > General > Messages**
+2. Select **Message Layout** from the dropdown
+
+**Available layouts:**
+- **Modern** - Compact with grouped messages
+- **Bubble** - Chat-style message bubbles
+- **Compact** - Maximum information density
+
+### Message Spacing
+
+Adjust the vertical spacing between messages:
+
+1. Navigate to **Settings > General > Messages**
+2. Select **Message Spacing** from the dropdown
+
+**Options:**
+- **Comfortable** - Default spacing
+- **Compact** - Reduced spacing
+- **Cozy** - Medium spacing
+
+### Right-Aligned Bubbles
+
+When using bubble layout, align your own messages to the right:
+
+1. Navigate to **Settings > Appearance > Identity**
+2. Toggle **Right Aligned Bubbles** on
+
+Added in version 1.2.3.
+
+### Page Zoom
+
+Adjust the overall UI scale:
+
+1. Navigate to **Settings > Appearance > Visual Tweaks**
+2. Enter a zoom percentage (75-150%)
+3. Press Enter to apply
+
+## Font Settings
+
+Sable uses two primary fonts included in the application:
+
+- **Nunito** - Primary UI font (variable font)
+- **Space Mono** - Monospace font for code and technical content
+
+These fonts are loaded from:
+- `@fontsource-variable/nunito` (version 5.2.7)
+- `@fontsource/space-mono` (version 5.2.9)
+
+### Custom Fonts
+
+Sable supports custom fonts for usernames through cosmetic settings:
+
+**Per-room fonts:**
+- Use `/font monospace` to set monospace font
+- Use `/font Courier New` to set a specific font
+- Requires power level 50 (default)
+
+**Font hierarchy:**
+1. Room Font (highest priority)
+2. Space Font
+3. Default Font (fallback)
+
+<Note>
+If a room font is invalid, Sable falls back directly to the default font, skipping the space font.
+</Note>
+
+## UI Customization
+
+### Identity Customization
+
+Personalize how you and others appear:
+
+**Colorful Names**
+1. Navigate to **Settings > Appearance > Identity**
+2. Toggle **Colorful Names** on
+
+Assigns unique colors to users based on their Matrix ID. Does not override custom room/space colors but will override default role colors.
+
+**Global Username Colors**
+1. Toggle **Render Global Username Colors** on
+2. Displays colors users set in their account settings
+
+Users can set their global color in **Settings > Account > Extended Profile > Name Color**.
+
+**Pronoun Pills**
+1. Toggle **Show Pronoun Pills** on
+2. Displays user pronouns next to names in the timeline
+
+Pronouns appear as small pills following the MSC4247 format:
+- Desktop: Up to 3 pronoun sets
+- Mobile: 1 pronoun set
+
+**Consistent Icon Style**
+1. Toggle **Consistent Icon Style** on
+2. Harmonizes icon appearance with background fill
+
+### Name Colors
+
+Sable supports a sophisticated color hierarchy:
+
+1. **Room Color** - Set with `/color #ffffff` (power level 50)
+2. **Space Color** - Set with `/gcolor #111111` (power level 50)
+3. **Role Color** - Based on room permissions
+4. **Global Color** - User's account-level color setting
+5. **Colorful Names** - Generated from Matrix ID
+6. **Default** - Theme's default color
+
+Higher items in the list take precedence.
+
+### Jumbo Emoji
+
+Control the size of emojis sent without accompanying text:
+
+1. Navigate to **Settings > Appearance > Jumbo Emoji**
+2. Select **Jumbo Emoji Size** from dropdown
+
+**Size options:**
+- None (same size as text)
+- Extra Small
+- Small
+- Normal (default)
+- Large
+- Extra Large
+
+Fixed in v1.2.1 to prevent non-emoji text with colons from being jumbo-ified.
+
+### Twitter Emoji
+
+Use Twitter-style emojis instead of native system emojis:
+
+1. Navigate to **Settings > Appearance > Visual Tweaks**
+2. Toggle **Twitter Emoji** on
+
+Enabled by default since version 1.1.6.
+
+## Privacy & Visual Security
+
+Hide sensitive content from view:
+
+1. Navigate to **Settings > Appearance > Privacy & Security**
+2. Enable blur options as needed:
+
+**Blur Media**
+- Blurs images and videos in the timeline
+- Click to reveal individual items
+
+**Blur Avatars**
+- Blurs user profile pictures and room icons
+- Useful when screen sharing or in public
+
+**Blur Emotes**
+- Blurs emoticons within messages
+- Maintains message privacy
+
+<Accordion title="When to use privacy blur">
+
+**Recommended scenarios:**
+- Screen sharing during meetings
+- Using Sable in public places
+- Streaming or recording
+- Taking screenshots for support
+- Presenting to an audience
+- Working in shared spaces
+
+</Accordion>
+
+## Date & Time Formatting
+
+### Time Format
+
+Choose between 12-hour and 24-hour time:
+
+1. Navigate to **Settings > General > Date & Time**
+2. Toggle **24-Hour Time Format**
+
+### Date Format
+
+Customize how dates are displayed:
+
+1. Navigate to **Settings > General > Date & Time**
+2. Select a preset from **Date Format** dropdown, or
+3. Choose "Custom" to create your own format
+
+**Format tokens:**
+- `YYYY` - Four-digit year
+- `YY` - Two-digit year
+- `MMMM` - Full month name
+- `MMM` - Short month name
+- `MM` - Two-digit month
+- `M` - Month number
+- `DD` - Two-digit day
+- `D` - Day number
+- `dddd` - Full day name
+- `ddd` - Short day name
+- `dd` - Two-letter day
+- `d` - Day of week (0-6)
+
+**Example formats:**
+- `YYYY-MM-DD` → 2026-03-02
+- `MMM D, YYYY` → Mar 2, 2026
+- `DD/MM/YYYY` → 02/03/2026
+
+Timestamp improvements merged from Cinny in v1.2.2 include showing full timestamps on hover.
+
+## Message Display Options
+
+### Hidden Events
+
+Control which events appear in the timeline:
+
+**Hide Membership Changes**
+1. Navigate to **Settings > General > Messages**
+2. Toggle **Hide Membership Change** on
+
+Hides join/leave/invite messages.
+
+**Hide Profile Changes**
+1. Toggle **Hide Profile Change** on
+
+Hides avatar and display name change events.
+
+**Hide Member Events in Read-Only Rooms**
+1. Toggle **Hide Member Events in Read-Only Rooms** on
+
+Enabled by default since v1.1.7 to improve readability of announcement channels.
+
+**Show Hidden Events**
+1. Toggle **Show Hidden Events** on
+
+Displays technical events normally hidden from users.
+
+### Media Display
+
+**Media Auto Load**
+1. Navigate to **Settings > General > Messages**
+2. Toggle **Disable Media Auto Load** to prevent automatic loading
+
+Useful for:
+- Slow connections
+- Limited bandwidth
+- Privacy concerns
+
+**URL Previews**
+1. Toggle **Url Preview** on/off
+2. Toggle **Url Preview in Encrypted Room** separately
+
+<Warning>
+Enabling URL previews in encrypted rooms may leak metadata to your homeserver, as it needs to fetch the preview.
+</Warning>
+
+## Advanced Customization
+
+### Room & Space Cosmetics
+
+Customize appearance per-room using slash commands:
+
+**Color commands** (require power level 50):
+```
+/color #ff0000          - Set name color in current room
+/gcolor #00ff00         - Set name color in current space
+```
+
+**Font commands** (require power level 50):
+```
+/font monospace         - Use monospace font
+/font "Courier New"     - Use specific font
+```
+
+Access room cosmetic permissions in **Room Settings > Cosmetics**.
+
+### Legacy Colors
+
+Sable updated legacy random name colors in v1.0.0 to be "no longer legacy and now be pretty."
+
+## Responsive Design
+
+Sable's appearance adapts to your screen size:
+
+- **Desktop** - Full-featured layout with sidebars
+- **Tablet** - Optimized spacing and touch targets
+- **Mobile** - Simplified navigation and gestures
+
+Uniform avatar appearance improvements were merged from Cinny in v1.2.2.
+
+## Accessibility
+
+Sable includes several accessibility features:
+
+- High contrast themes available
+- Adjustable font sizes via Page Zoom
+- Keyboard navigation support
+- Screen reader compatibility
+- Focus indicators
+- ARIA labels throughout
+
+<Note>
+If you have specific accessibility needs not covered by current settings, please [submit feedback](https://github.com/7w1/sable/issues) to the Sable project.
+</Note>

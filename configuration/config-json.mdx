@@ -1,0 +1,172 @@
+---
+title: 'config.json Reference'
+description: 'Complete reference for all configuration options in config.json'
+---
+
+The `config.json` file is the main configuration file for Sable. It controls homeserver settings, featured communities, routing behavior, and various UI features.
+
+## Location
+
+The config.json file should be placed in the root directory of your Sable installation, alongside the index.html file.
+
+## Configuration Fields
+
+### Homeserver Settings
+
+<ParamField path="defaultHomeserver" type="number" default="0">
+  Index of the default homeserver from the `homeserverList` array. Uses zero-based indexing.
+  
+  ```json
+  "defaultHomeserver": 0
+  ```
+</ParamField>
+
+<ParamField path="homeserverList" type="array" default="[]">
+  Array of homeserver domains that users can select from during login/registration.
+  
+  ```json
+  "homeserverList": ["matrix.org", "mozilla.org", "unredacted.org", "sable.moe", "kendama.moe"]
+  ```
+</ParamField>
+
+<ParamField path="allowCustomHomeservers" type="boolean" default="true">
+  Whether to allow users to enter custom homeserver URLs that are not in the predefined list.
+  
+  ```json
+  "allowCustomHomeservers": true
+  ```
+</ParamField>
+
+### Integration Settings
+
+<ParamField path="elementCallUrl" type="string | null" default="null">
+  URL for Element Call integration. Set to `null` to disable Element Call integration.
+  
+  ```json
+  "elementCallUrl": null
+  ```
+</ParamField>
+
+<ParamField path="matrixToBaseUrl" type="string" default="https://matrix.to">
+  Base URL for matrix.to links. Used for generating shareable links to Matrix rooms and users.
+  
+  ```json
+  "matrixToBaseUrl": "https://matrix.to"
+  ```
+</ParamField>
+
+### UI Settings
+
+<ParamField path="disableAccountSwitcher" type="boolean" default="false">
+  Disable the account switcher feature in the UI. When set to `true`, users cannot switch between multiple accounts.
+  
+  ```json
+  "disableAccountSwitcher": false
+  ```
+</ParamField>
+
+### Featured Communities
+
+<ParamField path="featuredCommunities" type="object">
+  Configuration for featured spaces, rooms, and servers that appear in the explore/discover section.
+  
+  <Expandable title="properties">
+    <ParamField path="openAsDefault" type="boolean" default="false">
+      Whether to open the featured communities panel by default when the app loads.
+    </ParamField>
+    
+    <ParamField path="spaces" type="array" default="[]">
+      Array of Matrix space IDs to feature. Use the format `#space-alias:homeserver.domain`.
+      
+      ```json
+      "spaces": [
+        "#sable:sable.moe",
+        "#community:matrix.org",
+        "#space:unredacted.org"
+      ]
+      ```
+    </ParamField>
+    
+    <ParamField path="rooms" type="array" default="[]">
+      Array of Matrix room IDs to feature. Use the format `#room-alias:homeserver.domain`.
+      
+      ```json
+      "rooms": [
+        "#announcements:sable.moe",
+        "#freesoftware:matrix.org"
+      ]
+      ```
+    </ParamField>
+    
+    <ParamField path="servers" type="array" default="[]">
+      Array of homeserver domains to feature for discovery.
+      
+      ```json
+      "servers": ["matrix.org", "mozilla.org", "unredacted.org"]
+      ```
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+### Router Settings
+
+<ParamField path="hashRouter" type="object">
+  Configuration for hash-based routing (using # in URLs).
+  
+  <Expandable title="properties">
+    <ParamField path="enabled" type="boolean" default="false">
+      Enable hash-based routing instead of browser history routing. Useful for certain hosting environments.
+    </ParamField>
+    
+    <ParamField path="basename" type="string" default="/">
+      Base path for the router. Change this if deploying to a subdirectory.
+    </ParamField>
+  </Expandable>
+  
+  ```json
+  "hashRouter": {
+    "enabled": false,
+    "basename": "/"
+  }
+  ```
+</ParamField>
+
+## Complete Example
+
+```json
+{
+  "defaultHomeserver": 0,
+  "homeserverList": ["matrix.org", "mozilla.org", "unredacted.org", "sable.moe", "kendama.moe"],
+  "allowCustomHomeservers": true,
+  "elementCallUrl": null,
+
+  "disableAccountSwitcher": false,
+  "matrixToBaseUrl": "https://matrix.to",
+
+  "featuredCommunities": {
+    "openAsDefault": false,
+    "spaces": [
+      "#sable:sable.moe",
+      "#community:matrix.org",
+      "#space:unredacted.org",
+      "#science-space:matrix.org",
+      "#libregaming-games:tchncs.de",
+      "#mathematics-on:matrix.org"
+    ],
+    "rooms": [
+      "#announcements:sable.moe",
+      "#freesoftware:matrix.org",
+      "#pcapdroid:matrix.org",
+      "#gentoo:matrix.org",
+      "#PrivSec.dev:arcticfoxes.net",
+      "#disroot:aria-net.org"
+    ],
+    "servers": ["matrix.org", "mozilla.org", "unredacted.org"]
+  },
+
+  "hashRouter": {
+    "enabled": false,
+    "basename": "/"
+  }
+}
+```

@@ -1,0 +1,176 @@
+---
+title: Rooms and Spaces
+description: Understanding rooms and spaces in Sable
+---
+
+Rooms and spaces are the fundamental building blocks of your Matrix experience. Rooms are where conversations happen, while spaces help you organize and group related rooms together.
+
+## What are Rooms?
+
+Rooms are chat channels where you can communicate with other users. They can be:
+
+- **Public rooms**: Discoverable and joinable by anyone
+- **Private rooms**: Invite-only spaces for specific users
+- **Direct messages**: Private conversations between users
+- **Call rooms**: Special rooms for Element Call integration
+
+## What are Spaces?
+
+Spaces are collections of rooms organized in a hierarchical structure. Think of them like folders or Discord servers - they help you group related rooms together for easier navigation.
+
+<Info>
+  Spaces can contain both rooms and other spaces, creating a nested hierarchy for complex community structures.
+</Info>
+
+## Creating Rooms
+
+To create a new room:
+
+1. Click the **+** button in the sidebar or navigation area
+2. Select **Create Room**
+3. Configure your room settings:
+   - **Room name**: Give your room a descriptive name
+   - **Room topic**: Optional description of the room's purpose
+   - **Visibility**: Choose between public or private
+   - **Encryption**: Enable end-to-end encryption (recommended for private conversations)
+4. Click **Create** to finalize
+
+<Tip>
+  Enable encryption when creating private rooms to ensure your conversations remain secure. Note that encryption cannot be disabled once enabled.
+</Tip>
+
+## Creating Spaces
+
+To create a new space:
+
+1. Click the **+** button in the sidebar
+2. Select **Create Space**
+3. Enter your space details:
+   - **Space name**: The name of your community or organization
+   - **Space topic**: Description of what the space is for
+   - **Visibility**: Public or private
+4. Click **Create**
+
+After creating a space, you can add existing rooms or create new ones within it.
+
+## Joining Rooms
+
+There are several ways to join rooms:
+
+### Join by Room Address
+
+1. Click the search or **+** button
+2. Enter the room address (e.g., `#general:matrix.org`)
+3. Click to join the room
+
+### Browse Public Rooms
+
+1. Navigate to the explore or room directory section
+2. Browse available public rooms on your homeserver or other servers
+3. Click on a room to preview and join
+
+### Accept Room Invites
+
+When someone invites you to a room:
+
+1. You'll receive a notification
+2. Navigate to your invites section
+3. Click **Accept** to join or **Reject** to decline
+
+<Note>
+  Some rooms may require you to join before you can view their messages, while others allow guests to preview content before joining.
+</Note>
+
+## Room Navigation
+
+Sable provides several ways to navigate between rooms:
+
+### Sidebar Navigation
+
+- **Spaces**: Listed on the left side, click to expand and view rooms within
+- **Direct Messages**: Quick access to your DM conversations
+- **Favorites**: Rooms you've marked as favorites appear at the top
+- **Unread indicators**: Badges show unread message counts
+
+### Search and Jump
+
+- Use the search feature to quickly find rooms by name
+- Jump to specific messages using permalinks
+- Navigate room history using timestamps
+
+<Tip>
+  You can navigate room history to specific dates and times using the jump to time feature. This is helpful for finding messages from past conversations.
+</Tip>
+
+## Space Hierarchy
+
+Spaces support nested hierarchies, allowing complex organizational structures:
+
+### Adding Rooms to Spaces
+
+1. Open your space
+2. Click **Add existing room** or **Create new room**
+3. Select rooms from your joined rooms list or create new ones
+4. The rooms will appear in your space's room list
+
+### Adding Subspaces
+
+You can add spaces within spaces:
+
+1. Navigate to your parent space
+2. Click **Add existing space**
+3. Select a space to add as a subspace
+4. The subspace appears nested within the parent
+
+### Featured Communities
+
+Sable includes featured communities in the lobby view, making it easy to discover and join popular spaces:
+
+- Community spaces for various topics
+- Public rooms for discussion
+- Servers with active communities
+
+<Info>
+  Featured communities are configured in your client's config and can include spaces like #sable:sable.moe and rooms like #announcements:sable.moe.
+</Info>
+
+## Room Types
+
+### Standard Rooms
+
+Regular chat rooms for group conversations. They support:
+
+- Text messages and rich media
+- File attachments
+- Reactions and replies
+- Pinned messages
+- Member management
+
+### Call Rooms
+
+Special rooms configured for Element Call integration:
+
+- Persistent video/voice call spaces
+- Dedicated chat alongside calls
+- Call participant management
+
+See the [Calls](/guide/calls) page for more information.
+
+### Announcement Rooms
+
+Read-only rooms where only moderators can post:
+
+<Tip>
+  Sable can hide member join/leave events in read-only rooms by default, making announcement channels easier to read.
+</Tip>
+
+## Room Management
+
+Once you've joined or created a room:
+
+- **Room settings**: Access from the room header menu
+- **Permissions**: Manage who can post, invite, and moderate
+- **Notifications**: Configure notification preferences per room
+- **Leave room**: Exit rooms you no longer wish to be part of
+
+For more details on room settings, see the [Account Settings](/guide/account-settings) documentation.

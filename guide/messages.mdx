@@ -1,0 +1,264 @@
+---
+title: Messaging Features
+description: Sending, editing, and managing messages in Sable
+---
+
+Sable provides a rich messaging experience with support for text formatting, media attachments, reactions, threads, and more.
+
+## Sending Messages
+
+To send a message:
+
+1. Navigate to a room
+2. Type your message in the input box at the bottom
+3. Press **Enter** to send (or **Shift+Enter** for new line)
+
+Messages support Markdown formatting for rich text:
+
+- `**bold**` for **bold text**
+- `*italic*` or `_italic_` for *italic text*
+- `~~strikethrough~~` for ~~strikethrough~~
+- `` `code` `` for `inline code`
+- Multi-line code blocks with triple backticks
+- Lists with `-`, `---`, `-#` markers
+
+<Tip>
+  Use `---` for horizontal rules, `-#` for numbered lists, and `-` for unordered lists in your messages.
+</Tip>
+
+## Editing Messages
+
+You can edit messages after sending them:
+
+### Edit Your Last Message
+
+- Press the **Up Arrow** key in an empty message input to edit your most recent message
+
+### Edit Any Message
+
+1. Hover over a message you sent
+2. Click the **Edit** button (pencil icon)
+3. Make your changes
+4. Press **Enter** to save or **Escape** to cancel
+
+<Note>
+  In version 1.2.1, Sable fixed an issue where editing previous messages with keybinds would break the message bar. You can now reliably use the Up Arrow key to edit messages.
+</Note>
+
+### Edit Formatting
+
+Edited messages show an "(edited)" indicator. The original message content is preserved in the message history.
+
+## Replies and Threads
+
+### Replying to Messages
+
+To reply to a specific message:
+
+1. Hover over the message (or swipe on mobile)
+2. Click the **Reply** button
+3. Type your reply - the original message will be quoted
+4. Send your message
+
+<Tip>
+  Reply is now a toggle in Sable. If you click or swipe to reply to the message you're already replying to, it will reset the reply.
+</Tip>
+
+### Replies with Files
+
+Sable supports responding to and rendering replies that include file attachments:
+
+- Reply to messages containing images, videos, or documents
+- File previews appear in the reply context
+- Full file access from the original message
+
+### Threading
+
+Threaded conversations help keep discussions organized:
+
+- Replies create visual thread indicators
+- Navigate thread history to see conversation flow
+- Collapse or expand thread views
+
+## Message Reactions
+
+React to messages with emoji:
+
+1. Hover over a message
+2. Click the **Add Reaction** button (emoji icon)
+3. Select an emoji from the picker
+4. Your reaction appears below the message
+
+### Reaction Features
+
+- Multiple users can use the same reaction
+- Click a reaction to add yours or remove it
+- View who reacted by hovering over reaction counts
+- Supports custom emoji and standard Unicode emoji
+
+<Info>
+  Sable enables Twitter-style emojis by default for consistent emoji rendering across platforms.
+</Info>
+
+## File Attachments
+
+Share files, images, videos, and documents in messages:
+
+### Sending Files
+
+1. Click the **Attach** button (paperclip icon) in the message input
+2. Select files from your device
+3. Add an optional caption
+4. Send the message
+
+Or drag and drop files directly into the message input area.
+
+### Supported File Types
+
+- **Images**: PNG, JPG, GIF, WebP with inline previews
+- **Videos**: MP4, WebM, and other common formats with inline players
+- **Documents**: PDF with built-in viewer, and other document types
+- **Audio**: MP3, OGG, and other audio files with playback controls
+
+### Media Viewers
+
+Sable includes enhanced image and PDF viewers:
+
+- Touch pan and zoom on mobile
+- Scroll wheel zoom on desktop
+- Improved responsiveness
+- Better gesture handling
+
+<Tip>
+  Gestures inside the image and PDF viewers have been fixed to prevent accidental triggers while viewing media.
+</Tip>
+
+## Pinned Messages
+
+Pin important messages to make them easily accessible:
+
+### Pinning Messages
+
+1. Hover over a message
+2. Click the **More** menu (three dots)
+3. Select **Pin message**
+4. The message is added to the room's pinned messages
+
+### Viewing Pinned Messages
+
+- Click the **Pins** icon in the room header
+- Browse all pinned messages in chronological order
+- Jump to a pinned message in the timeline
+
+<Note>
+  Sable includes an unread pin counter and highlighting feature that helps you track new pins you haven't seen yet. This was introduced in version 1.2.0.
+</Note>
+
+### Pin Features
+
+- Name colors in pinned messages for better readability
+- Jump directly to pinned messages in the timeline (if previously seen)
+- Unread indicators for new pins
+- Pin management in room settings
+
+## Message Actions
+
+Hover over any message to reveal action buttons:
+
+- **Reply**: Quote and respond to the message
+- **React**: Add an emoji reaction
+- **Edit**: Modify your own messages
+- **Delete**: Remove your messages (moderators can delete any message)
+- **More**: Access additional options like pin, copy link, view source
+
+### Mobile Context Menu
+
+<Tip>
+  On mobile, double-tap a message to open the context menu instead of holding. This provides faster access to message actions.
+</Tip>
+
+## Message Formatting
+
+### Jumbo Emoji
+
+Send emoji-only messages to display them larger:
+
+- Messages with only emoji (no text) appear jumbo-sized
+- Supports up to a few emoji before reverting to normal size
+- Works with custom emoji and Unicode emoji
+
+<Note>
+  Sable fixed an issue where non-emoji text with colons would be incorrectly jumbo-ified.
+</Note>
+
+### Name Colors
+
+Sable supports global name colors for users:
+
+- Automatically assigned based on user ID
+- Helps distinguish different users in conversations
+- Can be disabled in settings if preferred
+- Works in messages, pinned messages, and member lists
+
+### Timestamps
+
+- Relative timestamps ("5 minutes ago", "2 hours ago")
+- Show full timestamps on hover
+- Jump to specific times in room history
+- Time formatting improvements for better readability
+
+## Message Search
+
+Find specific messages in a room:
+
+1. Click the **Search** icon in the room header
+2. Enter your search query
+3. Browse results with context
+4. Click a result to jump to that message in the timeline
+
+Search supports:
+- Text content search
+- Filter by sender
+- Date range filtering
+
+## Special Message Types
+
+### Commands
+
+Sable supports slash commands for special actions:
+
+- `/me <action>` for emotes
+- `/shrug` to append ¯\\\_(ツ)\_/¯
+- `/tableflip` and `/unflip` for table flip emoticons
+- And many more room and user management commands
+
+### Rich Content
+
+- **Link previews**: Automatic previews for supported URLs
+- **Mentions**: @username to mention users (sends notifications)
+- **Room pills**: #roomname to create clickable room links
+- **Matrix.to links**: Clickable links to rooms, users, and events
+
+<Info>
+  Sable validates and generates proper matrix.to event links for sharing messages across clients.
+</Info>
+
+## Message Timeline
+
+The message timeline shows your conversation history:
+
+- Scroll up to load older messages
+- Jump to unread messages
+- Navigate to specific dates and times
+- Follow live updates as new messages arrive
+
+### Timeline Features
+
+- Read receipts showing who's seen messages
+- Typing indicators when others are composing
+- Message grouping by sender and time
+- Member join/leave event filtering (can hide in announcement rooms)
+
+<Tip>
+  In read-only announcement rooms, Sable hides member join/leave events by default so you can focus on the actual announcements.
+</Tip>

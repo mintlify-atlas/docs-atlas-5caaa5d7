@@ -1,0 +1,247 @@
+---
+title: Nginx Configuration
+description: Configure nginx to serve Sable with reverse proxy and SSL/TLS support
+---
+
+## Default Configuration
+
+Sable includes a production-ready nginx configuration in `docker-nginx.conf`. This configuration is optimized for serving single-page applications.
+
+### Basic Configuration
+
+```nginx
+server {
+  listen 80;
+  listen [::]:80;
+
+  location / {
+    root /usr/share/nginx/html;
+
+    rewrite ^/config.json$ /config.json break;
+    rewrite ^/manifest.json$ /manifest.json break;
+
+    rewrite ^/sw.js$ /sw.js break;
+    rewrite ^/pdf.worker.min.js$ /pdf.worker.min.js break;
+
+    rewrite ^/public/(.*)$ /public/$1 break;
+    rewrite ^/assets/(.*)$ /assets/$1 break;
+
+    rewrite ^/element-call/dist/(.*)$ /element-call/dist/$1 break;
+
+    rewrite ^(.+)$ /index.html break;
+  }
+}
+```
+
+## Configuration Breakdown
+
+### Server Block
+
+```nginx
+server {
+  listen 80;
+  listen [::]:80;
+```
+
+Listens on port 80 for both IPv4 and IPv6 connections.
+
+### Location Block
+
+```nginx
+location / {
+  root /usr/share/nginx/html;
+```
+
+Serves files from `/usr/share/nginx/html`, which is where the built Sable application is located.
+
+### Rewrite Rules
+
+The configuration uses specific rewrite rules to handle different file types:
+
+#### Configuration Files
+```nginx
+rewrite ^/config.json$ /config.json break;
+rewrite ^/manifest.json$ /manifest.json break;
+```
+Serves configuration and manifest files directly.
+
+#### Service Workers and Scripts
+```nginx
+rewrite ^/sw.js$ /sw.js break;
+rewrite ^/pdf.worker.min.js$ /pdf.worker.min.js break;
+```
+Serves the service worker and PDF worker scripts from the root.
+
+#### Static Assets
+```nginx
+rewrite ^/public/(.*)$ /public/$1 break;
+rewrite ^/assets/(.*)$ /assets/$1 break;
+```
+Serves static assets from their respective directories.
+
+#### Element Call Assets
+```nginx
+rewrite ^/element-call/dist/(.*)$ /element-call/dist/$1 break;
+```
+Serves Element Call embedded assets.
+
+#### SPA Routing
+```nginx
+rewrite ^(.+)$ /index.html break;
+```
+Routes all other requests to `index.html` for client-side routing.
+
+## Reverse Proxy Setup
+
+If you're running Sable behind a reverse proxy (e.g., another nginx instance or Caddy):
+
+### Nginx Reverse Proxy
+
+```nginx
+server {
+  listen 80;
+  server_name sable.example.com;
+
+  location / {
+    proxy_pass http://localhost:8080;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
+}
+```
+
+### Apache Reverse Proxy
+
+```apache
+<VirtualHost *:80>
+  ServerName sable.example.com
+
+  ProxyPreserveHost On
+  ProxyPass / http://localhost:8080/
+  ProxyPassReverse / http://localhost:8080/
+</VirtualHost>
+```
+
+## SSL/TLS Configuration
+
+<Warning>
+  Always use HTTPS in production to protect user credentials and communications.
+</Warning>
+
+### Let's Encrypt with Certbot
+
+<Steps>
+  <Step title="Install Certbot">
+    ```bash
+    sudo apt install certbot python3-certbot-nginx
+    ```
+  </Step>
+  
+  <Step title="Obtain SSL certificate">
+    ```bash
+    sudo certbot --nginx -d sable.example.com
+    ```
+  </Step>
+  
+  <Step title="Auto-renewal">
+    Certbot automatically sets up certificate renewal. Test with:
+    ```bash
+    sudo certbot renew --dry-run
+    ```
+  </Step>
+</Steps>
+
+### Manual SSL Configuration
+
+```nginx
+server {
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+  server_name sable.example.com;
+
+  ssl_certificate /path/to/fullchain.pem;
+  ssl_certificate_key /path/to/privkey.pem;
+
+  # Modern SSL configuration
+  ssl_protocols TLSv1.2 TLSv1.3;
+  ssl_ciphers HIGH:!aNULL:!MD5;
+  ssl_prefer_server_ciphers on;
+
+  # HSTS
+  add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+  location / {
+    proxy_pass http://localhost:8080;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
+}
+
+# Redirect HTTP to HTTPS
+server {
+  listen 80;
+  listen [::]:80;
+  server_name sable.example.com;
+  return 301 https://$server_name$request_uri;
+}
+```
+
+## Additional Optimizations
+
+### Gzip Compression
+
+```nginx
+gzip on;
+gzip_vary on;
+gzip_min_length 1024;
+gzip_types text/plain text/css text/xml text/javascript application/x-javascript application/xml+rss application/json application/javascript;
+```
+
+### Caching Headers
+
+```nginx
+location /assets/ {
+  root /usr/share/nginx/html;
+  expires 1y;
+  add_header Cache-Control "public, immutable";
+}
+
+location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+  expires 1y;
+  add_header Cache-Control "public, immutable";
+}
+
+location / {
+  root /usr/share/nginx/html;
+  try_files $uri $uri/ /index.html;
+  expires -1;
+  add_header Cache-Control "no-store, no-cache, must-revalidate";
+}
+```
+
+### Security Headers
+
+```nginx
+add_header X-Frame-Options "SAMEORIGIN" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header X-XSS-Protection "1; mode=block" always;
+add_header Referrer-Policy "no-referrer-when-downgrade" always;
+```
+
+## Testing Configuration
+
+Before reloading nginx, always test the configuration:
+
+```bash
+sudo nginx -t
+```
+
+If the test is successful, reload nginx:
+
+```bash
+sudo systemctl reload nginx
+```

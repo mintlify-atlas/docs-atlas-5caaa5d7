@@ -1,0 +1,104 @@
+---
+title: Contributing
+description: Guidelines for contributing to Sable
+---
+
+First off, thanks for taking the time to contribute!
+
+All types of contributions are encouraged and valued. Please make sure to read the relevant section before making your contribution. It will make it a lot easier for us maintainers and smooth out the experience for all involved. The community looks forward to your contributions.
+
+## Ways to Support
+
+If you like the project, but just don't have time to contribute, that's fine. There are other easy ways to support the project and show your appreciation:
+
+- Star the project
+- Talk about it!
+- Refer this project in your project's readme
+- Mention the project at local meetups and tell your friends/colleagues
+
+## Bug Reports
+
+Bug reports and feature suggestions must use descriptive and concise titles and be submitted to [GitHub Issues](https://github.com/7w1/sable/issues). Please use the search function to make sure that you are not submitting duplicates, and that a similar report or request has not already been resolved or rejected.
+
+## Pull Requests
+
+<Warning>
+**Legal Notice**
+
+When contributing to this project, you must agree that you have authored 100% of the content, that you have the necessary rights to the content and that the content you contribute may be provided under the project license.
+</Warning>
+
+### Before You Start
+
+**NOTE: If you want to add new features, please discuss with maintainers before coding or opening a pull request.** This is to ensure that we are on same track and following our roadmap.
+
+### Pull Request Guidelines
+
+**Please use clean, concise titles for your pull requests.** We use commit squashing, so the final commit in the dev branch will carry the title of the pull request. For easier sorting in changelog, start your pull request titles using one of the verbs "Add", "Change", "Remove", or "Fix" (present tense).
+
+Example:
+
+| Not ideal                           | Better                                        |
+| ----------------------------------- | --------------------------------------------- |
+| Fixed markAllAsRead in RoomTimeline | Fix read marker when paginating room timeline |
+
+It is not always possible to phrase every change in such a manner, but it is desired.
+
+**The smaller the set of changes in the pull request is, the quicker it can be reviewed and merged.** Splitting tasks into multiple smaller pull requests is often preferable.
+
+### Code Quality
+
+We use [ESLint](https://eslint.org/) for clean and stylistically consistent code syntax, so make sure your pull request follows it.
+
+**Pull requests are not merged unless all quality checks are passing.** At minimum, `format`, `lint`, `typecheck`, and `knip` must all be green before a pull request can be merged. Run these locally before opening or updating a pull request:
+
+```bash
+npm run fmt:check
+npm run lint
+npm run typecheck
+npm run knip
+```
+
+## Getting Help
+
+For any query or design discussion, join our [Matrix room](https://matrix.to/#/#sable:sable.moe).
+
+## Helpful Resources
+
+- [BEM methodology](http://getbem.com/introduction/)
+- [Atomic design](https://bradfrost.com/blog/post/atomic-web-design/)
+- [Matrix JavaScript SDK documentation](https://matrix-org.github.io/matrix-js-sdk/index.html)
+
+## Code of Conduct
+
+This project adheres to the Contributor Covenant Code of Conduct. By participating, you are expected to uphold this code.
+
+### Our Pledge
+
+We as members, contributors, and leaders pledge to make participation in our community a harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
+
+We pledge to act and interact in ways that contribute to an open, welcoming, diverse, inclusive, and healthy community.
+
+### Standards
+
+Examples of behavior that contributes to a positive environment for our community include:
+
+- Demonstrating empathy and kindness toward other people
+- Being respectful of differing opinions, viewpoints, and experiences
+- Giving and gracefully accepting constructive feedback
+- Accepting responsibility and apologizing to those affected by our mistakes, and learning from the experience
+- Focusing on what is best not just for us as individuals, but for the overall community
+
+Examples of unacceptable behavior include:
+
+- The use of sexualized language or imagery, and sexual attention or advances of any kind
+- Trolling, insulting or derogatory comments, and personal or political attacks
+- Public or private harassment
+- Publishing others' private information, such as a physical or email address, without their explicit permission
+- Other conduct which could reasonably be considered inappropriate in a professional setting
+
+### Enforcement
+
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement at cinnyapp@gmail.com. All complaints will be reviewed and investigated promptly and fairly.
+
+All community leaders are obligated to respect the privacy and security of the reporter of any incident.

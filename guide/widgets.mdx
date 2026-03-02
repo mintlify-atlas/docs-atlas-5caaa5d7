@@ -1,0 +1,328 @@
+---
+title: Widget Support
+description: Using widgets to extend room functionality
+---
+
+Widgets are embedded applications that run inside Matrix rooms, extending functionality beyond basic chat. Sable provides comprehensive widget support with a dedicated widget drawer for managing multiple widgets.
+
+## What are Widgets?
+
+Widgets are web applications embedded in Matrix rooms that provide additional features:
+
+- **Collaboration tools**: Whiteboards, document editors, planning boards
+- **Media players**: YouTube, SoundCloud, and other streaming services
+- **Productivity apps**: Polls, forms, scheduling tools
+- **Games**: Multiplayer games and interactive experiences
+- **Custom integrations**: Any web app can be embedded as a widget
+
+<Info>
+  Widgets are iframed web applications that can interact with the Matrix room through the Widget API, allowing them to send and receive messages, read room state, and more.
+</Info>
+
+## Widget Drawer
+
+Sable features a dedicated widget drawer for managing widgets in a room:
+
+### Opening the Widget Drawer
+
+1. Navigate to a room that has widgets
+2. Click the **Widgets** button in the room header
+3. The widget drawer opens, showing all available widgets
+
+<Note>
+  Sable added a minimum width for the widget drawer in version 1.1.1 to ensure widgets display properly.
+</Note>
+
+### Widget Drawer Features
+
+- **Multiple widgets**: View and interact with several widgets simultaneously
+- **Resizable**: Adjust the drawer width to your preference
+- **Widget list**: See all active widgets in the room
+- **Quick switching**: Toggle between widgets easily
+- **Minimize/maximize**: Collapse the drawer when not needed
+
+<Tip>
+  The widget drawer lets you keep widgets accessible while still viewing room chat, making it easy to collaborate and communicate at the same time.
+</Tip>
+
+## Adding Widgets to Rooms
+
+You can add widgets to any room where you have appropriate permissions:
+
+### Using Integration Manager
+
+1. Click the room menu or settings
+2. Select **Add widgets, bridges, & bots**
+3. Browse available widgets in the integration manager
+4. Click on a widget to configure and add it
+5. The widget appears in your room
+
+### Manual Widget Addition
+
+For custom or unlisted widgets:
+
+1. Open room settings
+2. Navigate to **Widgets** section
+3. Click **Add widget**
+4. Enter the widget details:
+   - **Widget name**: Display name for the widget
+   - **Widget URL**: The web application URL
+   - **Widget type**: Optional widget type identifier
+5. Click **Add** to create the widget
+
+<Info>
+  You need appropriate permissions (typically moderator or admin) to add widgets to a room. Room creators and admins can configure widget permissions in room settings.
+</Info>
+
+## Widget Types
+
+### Collaboration Widgets
+
+**Whiteboards and drawing tools**:
+- Shared canvas for brainstorming
+- Real-time collaboration
+- Drawing and diagramming
+
+**Document editors**:
+- Shared text editing
+- Code collaboration
+- Note-taking
+
+### Media Widgets
+
+**Video players**:
+- YouTube, Vimeo embedding
+- Synchronized playback for watch parties
+- Shared playlists
+
+**Audio players**:
+- Music streaming services
+- Podcast players
+- Radio streams
+
+### Utility Widgets
+
+**Polls and surveys**:
+- Room polls for decision making
+- Feedback collection
+- Voting systems
+
+**Scheduling tools**:
+- Meeting schedulers
+- Calendar integration
+- Event planning
+
+### Custom Widgets
+
+Developers can create custom widgets for specific needs:
+
+- Build using the Matrix Widget API
+- Host on any web server
+- Integrate with room events and state
+- Create interactive room experiences
+
+## Widget Permissions
+
+Widgets request permissions to interact with your room:
+
+### Permission Types
+
+- **Read messages**: Access to room message history
+- **Send messages**: Ability to post messages
+- **Read state**: Access to room configuration and state
+- **Send state**: Modify room state and settings
+
+### Approving Permissions
+
+When adding or using a widget:
+
+1. Review the requested permissions
+2. Understand what the widget will access
+3. Click **Approve** to grant permissions or **Deny** to reject
+4. Permissions can be revoked later in room settings
+
+<Tip>
+  Only grant widgets the permissions they need. Be cautious with widgets requesting send message or state permissions from unknown sources.
+</Tip>
+
+## Managing Widgets
+
+### Widget Settings
+
+Configure individual widgets:
+
+1. Open the widget drawer or room settings
+2. Find the widget you want to configure
+3. Click the widget menu (three dots)
+4. Options include:
+   - **Edit**: Modify widget URL or settings
+   - **Permissions**: Review and change permissions
+   - **Remove**: Delete the widget from the room
+   - **Reload**: Refresh the widget
+
+### Widget Layout
+
+Customize how widgets appear:
+
+- **Drawer mode**: Widgets in the side drawer (default)
+- **Fullscreen**: Expand a widget to fill the view
+- **Picture-in-picture**: Some widgets support floating mode
+
+### Removing Widgets
+
+To remove a widget from a room:
+
+1. Open room settings
+2. Navigate to **Widgets**
+3. Find the widget to remove
+4. Click **Remove** or **Delete**
+5. Confirm the action
+
+## Widget Integration Manager
+
+Sable includes an integration manager for discovering and adding widgets:
+
+### Browsing Widgets
+
+1. Open the integration manager from room settings
+2. Browse categories:
+   - Featured widgets
+   - Collaboration tools
+   - Media and entertainment
+   - Productivity
+   - All widgets
+3. View widget details and screenshots
+4. Add widgets with one click
+
+### Integration Manager Settings
+
+Configure integration manager preferences:
+
+- Set your preferred integration manager URL
+- Use custom or self-hosted integration managers
+- Disable integration manager if not needed
+
+<Info>
+  The integration manager is a separate service that provides a directory of available widgets and bridges. Your homeserver administrator may provide a custom integration manager.
+</Info>
+
+## Widget Development
+
+For developers interested in creating widgets:
+
+### Widget API
+
+Widgets communicate with Matrix using the Widget API:
+
+- Send and receive Matrix events
+- Access room state and history
+- Interact with room members
+- Use Matrix authentication
+
+### Creating a Widget
+
+1. Build a web application with the Matrix Widget API SDK
+2. Handle widget lifecycle events
+3. Request appropriate permissions
+4. Host your widget on a web server
+5. Add the widget URL to your Matrix room
+
+### Testing Widgets
+
+Test widgets during development:
+
+- Use development mode in room settings
+- Add local widget URLs for testing
+- Monitor widget console for errors
+- Test different permission levels
+
+<Tip>
+  The Matrix Widget API documentation provides detailed guides and examples for widget development.
+</Tip>
+
+## Security and Privacy
+
+### Widget Security
+
+Widgets run in isolated iframes for security:
+
+- Sandboxed execution environment
+- Limited access to your Matrix data
+- Permission-based access control
+- HTTPS required for widget URLs
+
+### Privacy Considerations
+
+<Note>
+  Widgets are third-party applications. Be mindful of what data you share through widgets and only use widgets from trusted sources.
+</Note>
+
+- Widgets can access data based on granted permissions
+- Some widgets may send data to external servers
+- Review widget privacy policies before use
+- Avoid entering sensitive information in untrusted widgets
+
+### Widget Permissions Review
+
+Regularly review widget permissions:
+
+1. Check which widgets are active in your rooms
+2. Review what permissions they have
+3. Remove unused or unnecessary widgets
+4. Revoke excessive permissions
+
+## Common Widget Use Cases
+
+### Team Collaboration
+
+- Add a whiteboard widget for brainstorming sessions
+- Use document editor widgets for collaborative writing
+- Integrate project management tools
+
+### Community Engagement
+
+- Run polls for community decisions
+- Embed media players for watch parties
+- Add games for community fun
+
+### Event Management
+
+- Use scheduling widgets for event planning
+- Add calendar widgets for event tracking
+- Integrate ticketing or registration forms
+
+### Education and Training
+
+- Embed educational content
+- Use quiz and survey widgets
+- Share interactive learning materials
+
+<Tip>
+  Widgets transform Matrix rooms from simple chat spaces into collaborative workspaces. Experiment with different widgets to find what works best for your community or team.
+</Tip>
+
+## Troubleshooting
+
+### Widget Not Loading
+
+- Check that the widget URL is accessible
+- Ensure the widget uses HTTPS
+- Try reloading the widget
+- Check browser console for errors
+
+### Widget Permission Denied
+
+- Verify you approved the widget permissions
+- Check if room permissions allow widget usage
+- Re-add the widget and approve permissions
+
+### Widget Drawer Issues
+
+- Try resizing the drawer
+- Close and reopen the drawer
+- Refresh the page
+- Check browser compatibility
+
+<Note>
+  If widgets consistently fail to load, check with your homeserver administrator about widget configuration and any server-side restrictions.
+</Note>

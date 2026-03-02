@@ -1,0 +1,236 @@
+---
+title: Project Structure
+description: Overview of Sable's codebase organization and directory structure
+---
+
+Sable follows a modular architecture with a clear separation between the Matrix client logic, application code, and UI components.
+
+## Top-Level Structure
+
+The source code is organized under `src/` with three main directories:
+
+```
+src/
+├── app/          # Application code and UI
+├── client/       # Matrix client initialization
+├── types/        # TypeScript type definitions
+├── index.tsx     # Application entry point
+├── sw.ts         # Service worker for media authentication
+└── colors.css.ts # Global color definitions (Vanilla Extract)
+```
+
+### Entry Points
+
+- **index.tsx** - Application entry point that:
+  - Initializes React root
+  - Registers service worker for authenticated media requests
+  - Handles multi-session storage and active session management
+  - Sets up iOS PWA meta tags
+  
+- **sw.ts** - Service worker that intercepts media requests to inject Matrix authentication tokens
+
+## App Directory Structure
+
+The `src/app/` directory contains all application logic organized by function:
+
+```
+app/
+├── components/   # Reusable UI components
+├── features/     # Feature-specific page sections
+├── hooks/        # Custom React hooks
+├── pages/        # Top-level page components
+├── plugins/      # Third-party integrations
+├── state/        # Jotai state management
+├── styles/       # Global styles and theme overrides
+└── utils/        # Utility functions
+```
+
+### Components (`src/app/components/`)
+
+UI components are organized by domain:
+
+- **editor/** - Rich text editor built with Slate.js
+  - Autocomplete system for emojis, users, and rooms
+  - Input/output formatting
+  - Toolbar and keyboard handling
+  
+- **emoji-board/** - Emoji and sticker picker
+  - Grid layout with virtualization
+  - Search and favorites
+  - Custom emoji and sticker pack support
+  
+- **message/** - Message rendering and interaction
+  - `attachment/` - File, image, video, and audio attachments
+  - `content/` - Message body rendering
+  - `layout/` - Modern, compact, and bubble layouts
+  - `modals/` - Message-related dialogs
+  
+- **media/** - Media playback and viewing
+- **nav/** - Navigation components
+- **page/** - Page layout components
+- **image-viewer/**, **image-editor/**, **pdf-viewer/** - File viewers
+- **create-room/** - Room creation flow
+- **direct-invite-prompt/** - Direct message invites
+- **sidebar/**, **virtualizer/** - Navigation and list rendering
+
+Many components follow a pattern of grouping related files:
+```
+ComponentName/
+├── ComponentName.tsx       # Main component
+├── ComponentName.css.ts    # Styles (Vanilla Extract)
+└── index.ts                # Public exports
+```
+
+### Features (`src/app/features/`)
+
+Features are larger, page-level components:
+
+- **room/** - Main room view with message timeline
+- **room-nav/** - Room navigation sidebar
+- **settings/** - User settings (account, devices, notifications, cosmetics)
+- **room-settings/**, **space-settings/** - Room and space configuration
+- **common-settings/** - Shared settings components
+- **lobby/** - Room/space lobby view
+- **search/** - Global search
+- **message-search/** - In-room message search
+- **widgets/** - Matrix widget integration
+- **call/** - Voice/video calling (Element Call integration)
+
+### Hooks (`src/app/hooks/`)
+
+Over 100 custom React hooks provide reusable logic:
+
+- **useMatrixClient.ts** - Access the Matrix client instance
+- **useRoom.ts**, **useSpace.ts** - Room and space data
+- **useRoomEvent.ts**, **useStateEvent.ts** - Matrix event listeners
+- **usePowerLevels.ts** - Permission checking
+- **useAccountData.ts** - User account data
+- **useAsyncCallback.ts** - Async action handling
+- **media/** - Media playback hooks
+- **router/** - Navigation hooks
+
+### Pages (`src/app/pages/`)
+
+Top-level routes:
+
+- **App.tsx** - Root component with providers
+- **Router.tsx** - React Router configuration
+- **auth/** - Login, register, password reset
+- **client/** - Main authenticated app
+  - `home/` - Home view
+  - `direct/` - Direct messages
+  - `space/` - Space view
+  - `explore/` - Public rooms
+  - `sidebar/` - Left sidebar
+
+### Plugins (`src/app/plugins/`)
+
+Integrations and utilities:
+
+- **markdown/** - Markdown parsing and rendering
+  - Block and inline element handlers
+  - Code syntax highlighting with Prism.js
+- **custom-emoji/** - Custom emoji system
+- **react-prism/** - Syntax highlighting
+- **text-area/** - Enhanced text input
+- **pdfjs-dist.ts** - PDF.js integration
+
+### State (`src/app/state/`)
+
+Jotai atoms for global state (see [State Management](/development/state-management)):
+
+- **sessions.ts** - Multi-account session management
+- **settings.ts** - User settings
+- **modal.ts** - Modal state
+- **upload.ts** - File upload state
+- **hooks/** - State hooks
+
+### Styles (`src/app/styles/`)
+
+Global styling:
+
+- **themes.css** - Theme definitions
+- **overrides/** - Component-specific style overrides
+
+### Utils (`src/app/utils/`)
+
+Utility functions for common operations
+
+## Client Directory
+
+The `src/client/` directory handles Matrix SDK initialization:
+
+- **initMatrix.ts** - Client initialization, store management, and session cleanup
+- **secretStorageKeys.js** - Crypto callback handlers
+
+See [Matrix SDK Integration](/development/matrix-sdk) for details.
+
+## Types Directory
+
+TypeScript type definitions:
+
+- **types/matrix-sdk.ts** - Re-exports from `matrix-js-sdk` for consistent imports
+- **types/matrix/** - Custom Matrix-related types
+  - `accountData.ts`, `common.ts`, `room.ts`
+
+## Build Configuration
+
+### Vite Configuration (vite.config.ts)
+
+Key features:
+
+- **Plugins**:
+  - `@vitejs/plugin-react` - React Fast Refresh
+  - `@vanilla-extract/vite-plugin` - CSS-in-TypeScript
+  - `vite-plugin-svgr` - SVG as React components
+  - `vite-plugin-pwa` - Service worker injection
+  - `@rollup/plugin-wasm` - WebAssembly support for crypto
+  - `vite-plugin-top-level-await` - Top-level await support
+
+- **Path Aliases**: Configured for clean imports
+  ```typescript
+  import Component from '$components/Component'
+  import { useHook } from '$hooks/useHook'
+  import { atom } from '$state/atom'
+  ```
+
+- **Optimization**: Force rebuilds of dependency optimizer for stability with matrix-js-sdk
+
+### TypeScript Configuration (tsconfig.json)
+
+- **Target**: ES2022
+- **Module**: ES2022
+- **Strict Mode**: Enabled with strict null checks
+- **Path Mapping**: Matches Vite aliases (`$hooks`, `$components`, etc.)
+- **Module Resolution**: Bundler mode for optimal Vite integration
+
+## Dependencies
+
+### Core Technologies
+
+- **React 18.3** - UI framework
+- **TypeScript 5.9** - Type safety
+- **Vite 7** - Build tool and dev server
+- **matrix-js-sdk 38.4.0** - Matrix protocol implementation
+
+### UI Libraries
+
+- **Folds 2.6** - Component library (custom design system)
+- **Vanilla Extract** - Type-safe CSS-in-TypeScript
+- **Framer Motion** - Animations
+- **React Router 6.30** - Routing
+
+### State & Data
+
+- **Jotai 2.18** - Atomic state management
+- **TanStack Query** - Server state and caching
+- **Immer** - Immutable state updates
+
+### Editor & Content
+
+- **Slate.js** - Rich text editor framework
+- **Prism.js** - Syntax highlighting
+- **html-react-parser** - HTML parsing
+- **sanitize-html** - HTML sanitization
+
+See [package.json](https://github.com/yourusername/sable/blob/main/package.json) for the complete dependency list.

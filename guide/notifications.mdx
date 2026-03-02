@@ -1,0 +1,200 @@
+---
+title: Notification Settings
+description: Configure push notifications, desktop alerts, sounds, and notification rules in Sable
+---
+
+## Overview
+
+Sable provides comprehensive notification settings to help you stay informed without being overwhelmed. Control how and when you receive notifications for messages and events.
+
+## Desktop Notifications
+
+Desktop notifications appear as system alerts when you receive messages.
+
+### Enabling Desktop Notifications
+
+1. Navigate to **Settings > Notifications > System**
+2. Click **Enable** if prompted to grant browser permission
+3. Toggle **Desktop Notifications** on
+
+<Warning>
+If you've previously denied notification permissions, you'll need to allow them from your browser's address bar settings.
+</Warning>
+
+### Notification Behavior
+
+When desktop notifications are enabled:
+- New message alerts appear as system notifications
+- Clicking a notification jumps directly to the message location (not the inbox)
+- Notifications respect your notification rules and keywords
+
+<Note>
+If your browser doesn't support notifications, you'll see a message indicating this limitation.
+</Note>
+
+## Push Notifications
+
+Sable supports push notifications through your Matrix homeserver.
+
+### Email Notifications
+
+Receive notifications via email when messages arrive:
+
+1. Navigate to **Settings > Notifications > System**
+2. Find **Email Notification**
+3. Toggle on to enable
+
+<Note>
+Email notifications require a verified email address on your account. If no email is attached, you'll see a warning message.
+</Note>
+
+Email notifications are sent using:
+- Brand name: "Sable"
+- Pusher type: `m.email`
+- Display name: Your email address
+
+## Sound Settings
+
+### Notification Sounds
+
+Control whether Sable plays a sound when new messages arrive:
+
+1. Navigate to **Settings > Notifications > System**
+2. Toggle **Notification Sound** on or off
+
+<Note>
+Notification sounds play regardless of desktop notification permission status.
+</Note>
+
+## Notification Rules
+
+Sable provides granular control over which messages trigger notifications.
+
+### All Messages
+
+Configure notifications for all messages in rooms:
+
+- **All messages in all rooms** - Get notified for every message
+- **Room-specific settings** - Customize per-room notification levels
+- **Mute specific rooms** - Silence notifications from selected rooms
+
+Access via **Settings > Notifications > All Messages**.
+
+### Special Messages
+
+Get notifications for specific types of messages:
+
+- **Direct messages** - Private 1-on-1 conversations
+- **Mentions** - When someone @mentions your username
+- **Replies** - When someone replies to your messages
+- **Reactions** - When someone reacts to your messages
+
+Access via **Settings > Notifications > Special Messages**.
+
+### Keyword Notifications
+
+Set up custom keywords that trigger notifications:
+
+1. Navigate to **Settings > Notifications > Keyword Messages**
+2. Add keywords or phrases
+3. Receive alerts when these words appear in any message
+
+<Accordion title="Keyword notification examples">
+
+**Use cases for keyword notifications:**
+- Your name or nicknames
+- Project names you're working on
+- Important topics or terms
+- Team or group identifiers
+
+**Example keywords:**
+- "urgent"
+- "meeting"
+- Your real name
+- Project codenames
+
+</Accordion>
+
+## Notification Modes
+
+Sable supports different notification modes to match your workflow:
+
+### Do Not Disturb
+
+Temporarily silence all notifications:
+- Mutes both desktop and sound notifications
+- Visual indicators still show unread messages
+- Can be toggled quickly from settings
+
+### Notification Priorities
+
+Matrix supports notification priorities:
+- **Loud** - Always notify with sound
+- **Default** - Follow your notification settings
+- **Silent** - Visual indicator only
+- **Off** - No notifications
+
+These can be set per-room from room settings.
+
+## Privacy Considerations
+
+### Encrypted Room Previews
+
+Notifications for encrypted rooms:
+- Show limited information for security
+- May display "New message" instead of content
+- Homeserver configuration dependent
+
+### Notification Content
+
+What's included in notifications:
+- Sender name
+- Room name
+- Message preview (for unencrypted rooms)
+- Timestamp
+
+<Warning>
+Be aware that email notifications may contain message content. Consider this when enabling email notifications for sensitive conversations.
+</Warning>
+
+## Troubleshooting
+
+<Accordion title="Desktop notifications not appearing">
+
+**Check these settings:**
+
+1. Browser notification permission is granted
+2. Desktop Notifications toggle is enabled in Sable
+3. System Do Not Disturb mode is off
+4. Browser is allowed to show notifications in system settings
+5. Room notification level isn't set to "Off"
+
+</Accordion>
+
+<Accordion title="Notification sounds not playing">
+
+**Verify:**
+
+1. Notification Sound toggle is enabled
+2. System volume is turned up
+3. Browser has permission to play audio
+4. No browser extensions are blocking audio
+
+</Accordion>
+
+<Accordion title="Email notifications not working">
+
+**Common issues:**
+
+1. No email address attached to account - Add one in your homeserver settings
+2. Email not verified - Check your inbox for verification email
+3. Homeserver doesn't support email notifications
+4. Email pusher not properly configured
+
+Try disabling and re-enabling email notifications to reset the pusher.
+
+</Accordion>
+
+## Migration Notes
+
+The Block Users feature has moved from Notifications to the Account section as of recent versions. Find it now under **Settings > Account > Block Users**.

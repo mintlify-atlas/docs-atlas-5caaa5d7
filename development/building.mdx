@@ -1,0 +1,118 @@
+---
+title: Building from Source
+description: Build Sable for production
+---
+
+This guide covers building Sable from source for production deployment.
+
+## Production Build
+
+To build Sable for production, run:
+
+```bash
+npm run build
+```
+
+This compiles the app into the `dist/` directory using Vite's production build system.
+
+## Build Output
+
+The build process creates optimized production files in the `dist/` directory:
+
+- Minified JavaScript bundles
+- Optimized CSS
+- Static assets (images, fonts, etc.)
+- Source maps (for debugging)
+
+### Build Configuration
+
+The build is configured in `vite.config.ts`:
+
+```typescript
+build: {
+  outDir: 'dist',
+  sourcemap: true,
+  copyPublicDir: false,
+  rollupOptions: {
+    plugins: [inject({ Buffer: ['buffer', 'Buffer'] })],
+  },
+}
+```
+
+## Deploying the Build
+
+After building, you can copy the `dist/` directory to your server and serve it with any static file server (nginx, Apache, etc.).
+
+For more information on deployment, see the [Self-hosting guide](/self-hosting/overview).
+
+## Available Scripts
+
+Sable includes several npm scripts for development and quality assurance:
+
+### Development
+
+```bash
+npm run dev      # Start development server
+npm run preview  # Preview production build locally
+```
+
+### Linting
+
+```bash
+npm run lint      # Run ESLint to check for code issues
+npm run lint:fix  # Automatically fix ESLint issues
+```
+
+### Formatting
+
+```bash
+npm run fmt        # Format code with Prettier
+npm run fmt:check  # Check if code is formatted correctly
+```
+
+### Type Checking
+
+```bash
+npm run typecheck  # Run TypeScript compiler to check types
+```
+
+### Unused Code Detection
+
+```bash
+npm run knip  # Detect unused files, dependencies, and exports
+```
+
+## Quality Checks Required for PRs
+
+Before submitting a pull request, ensure all of these checks pass:
+
+```bash
+npm run fmt:check
+npm run lint
+npm run typecheck
+npm run knip
+```
+
+<Warning>
+Pull requests are not merged unless all quality checks are passing. Run these locally before opening or updating a pull request.
+</Warning>
+
+## Build for Self-hosting
+
+If you're building Sable for self-hosting:
+
+1. Install dependencies:
+   ```bash
+   npm ci
+   ```
+
+2. Build the application:
+   ```bash
+   npm run build
+   ```
+
+3. The output in `dist/` is ready to be served by your web server.
+
+4. Configure your homeservers and other options in `config.json`.
+
+For deployment on a subdirectory, you need to update the `base` path in `build.config.ts` before building. For example, if you want to deploy on `https://sable.moe/app`, then set `base: '/app'`.

@@ -1,0 +1,279 @@
+---
+title: Security & Privacy
+description: End-to-end encryption, device verification, session management, and privacy settings
+---
+
+## Overview
+
+Sable takes security seriously, providing end-to-end encryption (E2EE) for your messages and robust device verification to ensure only you can access your encrypted conversations.
+
+## End-to-End Encryption (E2EE)
+
+### How E2EE Works in Sable
+
+Sable uses Matrix's end-to-end encryption protocol:
+
+- Messages are encrypted on your device before sending
+- Only verified devices can decrypt messages
+- Your homeserver cannot read encrypted message content
+- Encryption keys are stored securely on your devices
+
+### Encrypted Rooms
+
+Rooms with encryption enabled show a lock icon. Once encryption is enabled for a room, it cannot be disabled.
+
+<Warning>
+Encryption requires all participants to have properly set up devices. If someone loses access to their keys, they cannot read encrypted history.
+</Warning>
+
+## Device Verification
+
+Device verification ensures your devices are secure and prevents unauthorized access to your encrypted messages.
+
+### Setting Up Verification
+
+<Accordion title="Enable device verification (first time)">
+
+1. Navigate to **Settings > Devices > Security**
+2. Click the setup button under **Device Verification**
+3. Choose between:
+   - **Generate a Security Key** - Downloads a recovery key file
+   - **Enter a Security Phrase** - Create a memorable passphrase
+4. Store your security key/phrase safely
+5. Your current device is now verified
+
+<Warning>
+Without your security key or phrase, you cannot verify new devices or recover encrypted messages if you lose all devices.
+</Warning>
+
+</Accordion>
+
+### Verification Status
+
+Your verification status appears in **Settings > Devices**:
+
+- **Verified** (green badge) - Device is verified and can access encrypted messages
+- **Unverified** (red badge) - Device needs verification
+- **X Unverified** (yellow badge) - Other devices need verification
+
+### Verifying the Current Device
+
+<Accordion title="Verify from another device">
+
+**From another verified device:**
+
+1. Open Settings > Devices on the verified device
+2. Find the unverified device in the list
+3. Click on it and select **Verify**
+4. Follow the interactive verification flow
+5. Compare emojis on both devices
+6. Confirm they match
+
+</Accordion>
+
+<Accordion title="Verify manually with security key">
+
+If you don't have access to another verified device:
+
+1. Navigate to **Settings > Devices > Current**
+2. Click **Verify Manually** if shown
+3. Enter your security key or passphrase
+4. Device is now verified
+
+</Accordion>
+
+### Verifying Other Devices
+
+Once your current device is verified, you can verify your other sessions:
+
+1. Navigate to **Settings > Devices > Other Devices**
+2. Find unverified devices in the list
+3. Click **Verify** next to each device
+4. Follow the verification flow
+
+## Session Management
+
+### Current Device
+
+View details about your current session:
+
+- **Device name** - Set a recognizable name
+- **Device ID** - Unique identifier
+- **Last active** - When this device was last used
+- **IP address** - Last known IP
+- **User agent** - Browser/app information
+
+### Device Key Details
+
+For verified devices, view cryptographic details:
+
+- **Device key** - Public signing key
+- **Ed25519 fingerprint** - For manual verification
+- **Curve25519 identity key** - For encryption
+
+Access via **Settings > Devices > Current** when using a crypto-enabled client.
+
+### Managing Other Sessions
+
+View and manage all active sessions:
+
+1. Navigate to **Settings > Devices > Other Devices**
+2. See all active sessions with details
+3. Click on any session to view more information
+4. Click **Sign Out** to remotely terminate a session
+
+<Warning>
+Signing out of a session will:
+- End that session immediately
+- Require login again on that device
+- May cause loss of encrypted message history if not backed up
+</Warning>
+
+### Logging Out
+
+To sign out of your current device:
+
+1. Click the **Logout** button in the settings sidebar
+2. Confirm you want to sign out
+3. Optionally export your encryption keys first
+
+## Privacy Settings
+
+### Privacy Blur
+
+Sable offers privacy blur options to hide content from onlookers:
+
+1. Navigate to **Settings > Appearance > Privacy & Security**
+2. Enable blur options:
+   - **Blur Media** - Blurs images and videos in the timeline
+   - **Blur Avatars** - Blurs user profile pictures and room icons
+   - **Blur Emotes** - Blurs emoticons within messages
+
+Useful when:
+- Using Sable in public spaces
+- Screen sharing
+- Taking screenshots
+- Streaming
+
+### Read Receipts and Typing Indicators
+
+Control your activity visibility:
+
+1. Navigate to **Settings > General > Editor**
+2. Toggle **Hide Typing & Read Receipts**
+
+When enabled:
+- Others won't see when you're typing
+- Your read receipts aren't sent
+- Keeps your activity private
+
+<Note>
+Some homeservers may override these settings based on their policies.
+</Note>
+
+## Encryption Key Backup
+
+### Cloud Backup
+
+Once device verification is enabled, encrypted key backup is available:
+
+- Automatically backs up encryption keys to your homeserver
+- Protected by your security key/phrase
+- Enables message access on new devices
+- Syncs across verified devices
+
+View backup status in **Settings > Devices > Current** (requires verified device).
+
+### Local Backup
+
+Export and import encryption keys manually. See the [Account Settings](/guide/account-settings) page for detailed backup and restore instructions.
+
+## Cross-Signing
+
+Sable uses Matrix's cross-signing feature:
+
+- **Master key** - Root of trust for your account
+- **Self-signing key** - Signs your devices
+- **User-signing key** - Signs other users' keys
+
+Cross-signing is automatically set up when you enable device verification.
+
+### Resetting Cross-Signing
+
+If you've lost access to all verified devices:
+
+1. Navigate to **Settings > Devices > Security**
+2. Look for the reset option
+3. Follow prompts to set up new keys
+
+<Warning>
+Resetting cross-signing:
+- Invalidates all previous verifications
+- Requires re-verifying all devices
+- May cause trust warnings for other users
+- Should only be done if absolutely necessary
+</Warning>
+
+## Security Best Practices
+
+<Accordion title="Recommended security practices">
+
+**Do:**
+- ✓ Enable device verification immediately
+- ✓ Store your security key/phrase in a password manager
+- ✓ Verify all your devices
+- ✓ Export local key backups periodically
+- ✓ Review active sessions regularly
+- ✓ Use strong, unique passwords
+- ✓ Sign out unused sessions
+
+**Don't:**
+- ✗ Share your security key with anyone
+- ✗ Skip device verification
+- ✗ Ignore unverified device warnings
+- ✗ Leave sessions active on shared devices
+- ✗ Screenshot or share your security key
+
+</Accordion>
+
+## Troubleshooting
+
+<Accordion title="Can't access encrypted messages">
+
+**Possible solutions:**
+
+1. Verify your device using security key/phrase
+2. Verify from another already-verified device
+3. Import a local key backup if available
+4. Request key re-shares from other room members
+5. Check that encryption is properly initialized
+
+</Accordion>
+
+<Accordion title="Verification failed or stuck">
+
+**Try these steps:**
+
+1. Cancel and restart the verification process
+2. Ensure both devices are online and synced
+3. Check for network connectivity issues
+4. Try verifying from the other device instead
+5. Restart the app/browser
+6. Check homeserver status
+
+</Accordion>
+
+<Accordion title="Security key/phrase lost">
+
+If you've lost your security key or phrase:
+
+1. If you still have a verified device, you can reset cross-signing
+2. Export keys from that device before resetting
+3. Set up new cross-signing with a new security key/phrase
+4. If all verified devices are lost, encrypted history may be unrecoverable
+
+<Warning>
+Without a verified device or backed-up keys, encrypted message history cannot be recovered.
+</Warning>
+
+</Accordion>

@@ -1,0 +1,77 @@
+---
+title: Local Development
+description: Set up Sable for local development
+---
+
+This guide will help you set up Sable for local development on your machine.
+
+## Prerequisites
+
+### Node.js and npm
+
+Sable requires the following versions:
+
+- **Node.js**: 24.x
+- **npm**: 11.x
+
+The specific Node.js version is defined in [`.node-version`](https://github.com/7w1/sable/blob/dev/.node-version) as `v24.13.1`.
+
+### Version Manager Recommendation
+
+<Tip>
+We recommend using a version manager as versions change quickly. Here are some popular options:
+
+- **[fnm](https://github.com/Schniz/fnm)** - Great cross-platform option (Windows, macOS, and Linux)
+- **[NVM on Windows](https://github.com/coreybutler/nvm-windows#installation--upgrades)** - Windows-specific
+- **[nvm](https://github.com/nvm-sh/nvm)** - Linux/macOS option
+
+Use the version defined in [`.node-version`](.node-version).
+</Tip>
+
+## Setup
+
+Execute the following commands to start a development server:
+
+```bash
+npm ci  # Installs all dependencies
+npm start  # Serve a development version
+```
+
+### What these commands do
+
+- **`npm ci`**: Installs all dependencies from the lockfile. This is the recommended way to install dependencies in CI/CD environments and for consistent local development.
+- **`npm start`**: This is an alias for `npm run dev`, which starts the Vite development server.
+
+## Development Server
+
+The development server runs on **port 8080** by default. Once started, you can access Sable at:
+
+```
+http://localhost:8080
+```
+
+The server is configured in `vite.config.ts` with the following settings:
+
+```typescript
+server: {
+  port: 8080,
+  host: true,
+  fs: {
+    // Allow serving files from one level up to the project root
+    allow: ['..'],
+  },
+}
+```
+
+## Hot Module Replacement
+
+The Vite development server includes Hot Module Replacement (HMR), which means your changes will be reflected in the browser automatically without a full page reload.
+
+## Next Steps
+
+Once you have the development server running:
+
+- Make your changes to the codebase
+- Test your changes in the browser
+- Run quality checks before submitting a pull request (see [Building](/development/building))
+- Follow the [Contributing guidelines](/development/contributing) when ready to submit

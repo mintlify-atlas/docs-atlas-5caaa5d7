@@ -1,0 +1,235 @@
+---
+title: 'Featured Communities'
+description: 'Configure featured spaces, rooms, and servers in the Sable explore section'
+---
+
+Featured communities allow you to highlight specific Matrix spaces, rooms, and servers in the Sable explore/discovery interface. This helps users find relevant communities quickly.
+
+## Configuration Structure
+
+The `featuredCommunities` object in config.json controls all featured community settings:
+
+```json
+{
+  "featuredCommunities": {
+    "openAsDefault": false,
+    "spaces": [],
+    "rooms": [],
+    "servers": []
+  }
+}
+```
+
+## Open as Default
+
+<ParamField path="openAsDefault" type="boolean" default="false">
+  Controls whether the featured communities panel opens automatically when users launch Sable.
+</ParamField>
+
+### Example
+
+```json
+{
+  "featuredCommunities": {
+    "openAsDefault": true
+  }
+}
+```
+
+Set to `true` to show featured communities immediately on app load, helping users discover content right away.
+
+## Featured Spaces
+
+<ParamField path="spaces" type="array" default="[]">
+  Array of Matrix space aliases to feature. Spaces are collections of rooms organized around a theme or community.
+</ParamField>
+
+### Format
+
+Use Matrix room aliases in the format `#alias:homeserver.domain`:
+
+```json
+{
+  "featuredCommunities": {
+    "spaces": [
+      "#sable:sable.moe",
+      "#community:matrix.org",
+      "#space:unredacted.org",
+      "#science-space:matrix.org",
+      "#libregaming-games:tchncs.de",
+      "#mathematics-on:matrix.org"
+    ]
+  }
+}
+```
+
+### Adding Your Own Spaces
+
+1. Find the space alias (starts with `#`)
+2. Include the homeserver domain after the colon
+3. Add to the array:
+
+```json
+{
+  "spaces": [
+    "#your-community:your-homeserver.com",
+    "#another-space:matrix.org"
+  ]
+}
+```
+
+## Featured Rooms
+
+<ParamField path="rooms" type="array" default="[]">
+  Array of Matrix room aliases to feature. These are individual chat rooms or channels.
+</ParamField>
+
+### Format
+
+Same as spaces, use the format `#alias:homeserver.domain`:
+
+```json
+{
+  "featuredCommunities": {
+    "rooms": [
+      "#announcements:sable.moe",
+      "#freesoftware:matrix.org",
+      "#pcapdroid:matrix.org",
+      "#gentoo:matrix.org",
+      "#PrivSec.dev:arcticfoxes.net",
+      "#disroot:aria-net.org"
+    ]
+  }
+}
+```
+
+### Use Cases
+
+- Highlight important announcement rooms
+- Feature popular discussion channels
+- Promote community support rooms
+- Showcase topic-specific channels
+
+## Featured Servers
+
+<ParamField path="servers" type="array" default="[]">
+  Array of homeserver domains to feature for server discovery. Users can explore public rooms on these servers.
+</ParamField>
+
+### Format
+
+Just the domain name, without protocol or path:
+
+```json
+{
+  "featuredCommunities": {
+    "servers": ["matrix.org", "mozilla.org", "unredacted.org"]
+  }
+}
+```
+
+### Adding Servers
+
+```json
+{
+  "servers": [
+    "matrix.org",
+    "your-homeserver.com",
+    "community-server.org"
+  ]
+}
+```
+
+Users can browse public rooms from these servers through the Sable discovery interface.
+
+## Complete Example
+
+Here's a full featured communities configuration from the default Sable config:
+
+```json
+{
+  "featuredCommunities": {
+    "openAsDefault": false,
+    "spaces": [
+      "#sable:sable.moe",
+      "#community:matrix.org",
+      "#space:unredacted.org",
+      "#science-space:matrix.org",
+      "#libregaming-games:tchncs.de",
+      "#mathematics-on:matrix.org"
+    ],
+    "rooms": [
+      "#announcements:sable.moe",
+      "#freesoftware:matrix.org",
+      "#pcapdroid:matrix.org",
+      "#gentoo:matrix.org",
+      "#PrivSec.dev:arcticfoxes.net",
+      "#disroot:aria-net.org"
+    ],
+    "servers": ["matrix.org", "mozilla.org", "unredacted.org"]
+  }
+}
+```
+
+## Customization Examples
+
+### Corporate Deployment
+
+Feature only your organization's spaces and rooms:
+
+```json
+{
+  "featuredCommunities": {
+    "openAsDefault": true,
+    "spaces": [
+      "#company-wide:company.com",
+      "#engineering:company.com",
+      "#marketing:company.com"
+    ],
+    "rooms": [
+      "#announcements:company.com",
+      "#general:company.com",
+      "#support:company.com"
+    ],
+    "servers": ["company.com"]
+  }
+}
+```
+
+### Community-Focused Instance
+
+Highlight spaces and rooms for a specific interest:
+
+```json
+{
+  "featuredCommunities": {
+    "openAsDefault": false,
+    "spaces": [
+      "#opensource:matrix.org",
+      "#linux:libera.chat",
+      "#programming:mozilla.org"
+    ],
+    "rooms": [
+      "#python:matrix.org",
+      "#javascript:matrix.org",
+      "#rust:mozilla.org"
+    ],
+    "servers": ["matrix.org", "mozilla.org"]
+  }
+}
+```
+
+### Minimal Configuration
+
+No featured communities:
+
+```json
+{
+  "featuredCommunities": {
+    "openAsDefault": false,
+    "spaces": [],
+    "rooms": [],
+    "servers": []
+  }
+}
+```

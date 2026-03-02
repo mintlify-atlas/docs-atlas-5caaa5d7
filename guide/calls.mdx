@@ -1,0 +1,267 @@
+---
+title: Voice and Video Calls
+description: Making calls with Element Call integration
+---
+
+Sable supports voice and video calls through Element Call integration, providing a seamless calling experience directly within your Matrix rooms.
+
+## Element Call Integration
+
+Element Call is a group calling solution built on Matrix that enables:
+
+- Voice and video calls in any room
+- Screen sharing
+- Multiple participants
+- End-to-end encryption
+- Spatial audio for natural conversations
+
+<Info>
+  Element Call is integrated directly into Sable, so you can start and join calls without leaving the client or opening external applications.
+</Info>
+
+### Configuration
+
+Element Call integration is configured in your Sable config:
+
+- `elementCallUrl`: Set to your Element Call instance URL
+- If set to `null`, the default Element Call service is used
+- Self-hosted Element Call instances are supported
+
+Your homeserver administrator can provide the appropriate Element Call URL for your deployment.
+
+## Starting Calls
+
+There are several ways to start a call in Sable:
+
+### Start a Call in a Room
+
+1. Navigate to any room
+2. Click the **Call** button in the room header (phone or video icon)
+3. Choose between:
+   - **Voice call**: Audio only
+   - **Video call**: Audio and video
+4. The call starts and other room members can join
+
+<Tip>
+  Starting a call in a room creates a call session that others can join at any time. It's like opening a conference room that people can enter and leave freely.
+</Tip>
+
+### Starting a Call in a DM
+
+1. Open a direct message conversation
+2. Click the call button in the DM header
+3. The other person receives a call notification
+4. They can answer to join the call
+
+DM calls work similarly to traditional phone calls with ringing and answer mechanisms.
+
+### Join an Ongoing Call
+
+When a call is active in a room:
+
+1. You'll see a call indicator in the room
+2. Click the **Join Call** button
+3. Choose your audio/video settings
+4. Join the ongoing conversation
+
+Multiple people can join and leave calls freely without ending the call for others.
+
+## Call Rooms
+
+Call rooms are special rooms optimized for persistent calling:
+
+### What are Call Rooms?
+
+Call rooms are Matrix rooms configured specifically for Element Call:
+
+- Permanent call presence
+- Dedicated space for voice/video communication
+- Chat alongside the call
+- Ideal for always-on team spaces or voice hangouts
+
+### Creating a Call Room
+
+To create a call room:
+
+1. Create a new room or configure an existing room
+2. Enable Element Call integration in room settings
+3. The room becomes a call room with persistent call features
+
+Call rooms show a call interface prominently and make it easy for members to hop in and out.
+
+### Call Room Features
+
+- **Persistent calls**: The call space is always available
+- **Chat integration**: Text chat alongside voice/video
+- **Participant list**: See who's in the call at a glance
+- **Screen sharing**: Share your screen with call participants
+
+<Note>
+  Sable fixed the Call Rooms' chat button in version 1.2.4, ensuring the chat interface works properly alongside calls.
+</Note>
+
+## Call Controls
+
+While in a call, you have access to various controls:
+
+### Audio Controls
+
+- **Mute/Unmute**: Toggle your microphone
+- **Volume**: Adjust speaker volume
+- **Audio settings**: Choose microphone and speaker devices
+
+### Video Controls
+
+- **Camera on/off**: Toggle your video feed
+- **Video settings**: Select camera device
+- **Video quality**: Adjust resolution and bandwidth
+
+### Screen Sharing
+
+1. Click the **Share Screen** button while in a call
+2. Select which screen or window to share
+3. Participants can see your shared screen
+4. Click **Stop Sharing** to end
+
+### Call Layout
+
+- **Grid view**: See all participants in a grid
+- **Spotlight view**: Focus on the active speaker
+- **Sidebar**: Participant list with video thumbnails
+
+## Call Participants
+
+Manage who's in the call:
+
+### Viewing Participants
+
+- See all call participants in the call interface
+- View video feeds from participants with cameras on
+- Audio indicators show who's speaking
+
+### Participant Actions
+
+- View participant profiles
+- See participant connection quality
+- Moderators can manage participants (if permissions allow)
+
+## Call Quality
+
+Element Call adapts to your network conditions:
+
+### Network Quality
+
+- Automatic quality adjustment based on bandwidth
+- Connection quality indicators for you and participants
+- Reconnection handling if network drops
+
+### Improving Call Quality
+
+<Tip>
+  For the best call quality, use a wired internet connection and close bandwidth-intensive applications.
+</Tip>
+
+- Use headphones to prevent echo
+- Ensure good lighting for video
+- Close unnecessary browser tabs
+- Check your internet connection speed
+
+## Call Notifications
+
+Stay informed about call activity:
+
+### Incoming Calls
+
+- Desktop notifications when someone starts a call
+- Ringing sound for DM calls (if enabled)
+- Visual indicators in the room list
+
+### Active Calls
+
+- Badge or indicator showing ongoing calls in rooms
+- Number of participants visible
+- Join calls with one click from notifications
+
+## Privacy and Security
+
+### Encryption
+
+Element Call supports end-to-end encryption:
+
+- Voice and video streams are encrypted
+- Only call participants can access the media
+- Encryption keys are managed automatically
+
+<Info>
+  Element Call uses WebRTC encryption in addition to Matrix's end-to-end encryption for maximum security.
+</Info>
+
+### Permissions
+
+Room permissions control call features:
+
+- Who can start calls
+- Who can join calls
+- Call moderation capabilities
+
+Configure these in room settings under permissions.
+
+## Troubleshooting
+
+### Camera or Microphone Not Working
+
+1. Check browser permissions - allow camera/microphone access
+2. Verify your device is selected in call settings
+3. Test your devices in browser settings
+4. Check if other applications are using your camera/mic
+
+### Cannot Join Call
+
+- Ensure you have permission to join calls in the room
+- Check your network connection
+- Try refreshing the page
+- Verify Element Call is properly configured
+
+### Poor Call Quality
+
+- Check your internet connection speed
+- Reduce video quality in call settings
+- Close other bandwidth-intensive applications
+- Try using audio-only mode
+
+<Tip>
+  If you experience persistent call issues, check with your homeserver administrator about the Element Call configuration and server resources.
+</Tip>
+
+## Call Settings
+
+Customize your calling experience:
+
+- **Default audio/video**: Choose whether calls start with camera on
+- **Notification sounds**: Enable/disable call ringing
+- **Device selection**: Set preferred microphone, camera, and speakers
+- **Quality preferences**: Adjust default video quality
+
+Access call settings from Sable's main settings menu.
+
+## Differences from Other Call Solutions
+
+### Element Call vs. Jitsi
+
+Some Matrix clients use Jitsi for calls. Element Call offers:
+
+- Better Matrix integration
+- Built-in encryption
+- Spatial audio features
+- More modern interface
+- Improved performance
+
+### Element Call vs. Traditional VoIP
+
+Unlike traditional phone calls:
+
+- Calls happen in Matrix rooms
+- Multiple participants can join/leave freely
+- Integrated with room chat and history
+- Works across different homeservers
+- No phone numbers required

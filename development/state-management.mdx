@@ -1,0 +1,400 @@
+---
+title: State Management
+description: How Sable manages application state using Jotai atoms and hooks
+---
+
+Sable uses [Jotai](https://jotai.org/) for state management, providing atomic, bottom-up state that integrates seamlessly with React.
+
+## Architecture
+
+### Why Jotai?
+
+Jotai was chosen for:
+
+- **Atomic state**: Small, focused state units instead of monolithic stores
+- **Minimal boilerplate**: No actions, reducers, or selectors
+- **TypeScript-first**: Excellent type inference
+- **React integration**: Works naturally with hooks and Suspense
+- **Performance**: Automatic dependency tracking and re-render optimization
+
+### State Organization
+
+State is organized in `src/app/state/` with atoms grouped by domain:
+
+```
+state/
+├── sessions.ts              # Multi-account session storage
+├── settings.ts              # User preferences
+├── modal.ts                 # Modal dialogs
+├── upload.ts                # File uploads
+├── typingMembers.ts         # Typing indicators
+├── navToActivePath.ts       # Navigation state
+├── createRoomModal.ts       # Room creation state
+├── createSpaceModal.ts      # Space creation state
+├── hooks/                   # State-related hooks
+├── room/                    # Room-specific state
+├── room-list/               # Room list state
+└── utils/                   # State utilities
+```
+
+## Core State Atoms
+
+### Sessions (`sessions.ts`)
+
+Manages multi-account authentication state:
+
+```typescript
+import { atom } from 'jotai'
+import { sessionsAtom, activeSessionIdAtom } from '$state/sessions'
+
+// Session type
+type Session = {
+  baseUrl: string
+  userId: string
+  deviceId: string
+  accessToken: string
+  expiresInMs?: number
+  refreshToken?: string
+}
+
+// Actions
+type SessionsAction =
+  | { type: 'PUT'; session: Session }
+  | { type: 'DELETE'; session: Session }
+```
+
+**Key Features**:
+- localStorage persistence via `atomWithLocalStorage`
+- Multi-session support (multiple logged-in accounts)
+- Active session tracking with `activeSessionIdAtom`
+- Migration support from legacy single-session storage
+
+**Usage**:
+```typescript
+import { useAtom, useSetAtom } from 'jotai'
+import { sessionsAtom, activeSessionIdAtom } from '$state/sessions'
+
+function SessionManager() {
+  const [sessions, dispatch] = useAtom(sessionsAtom)
+  const setActiveSessionId = useSetAtom(activeSessionIdAtom)
+
+  const addSession = (session: Session) => {
+    dispatch({ type: 'PUT', session })
+    setActiveSessionId(session.userId)
+  }
+
+  const removeSession = (session: Session) => {
+    dispatch({ type: 'DELETE', session })
+  }
+}
+```
+
+### Settings (`settings.ts`)
+
+User preferences with localStorage persistence:
+
+```typescript
+export interface Settings {
+  // Theme
+  themeId?: string
+  useSystemTheme: boolean
+  lightThemeId?: string
+  darkThemeId?: string
+  
+  // Editor
+  isMarkdown: boolean
+  editorToolbar: boolean
+  enterForNewline: boolean
+  
+  // UI
+  messageLayout: MessageLayout  // Modern, Compact, Bubble
+  messageSpacing: MessageSpacing
+  twitterEmoji: boolean
+  uniformIcons: boolean
+  
+  // Privacy
+  hideMembershipEvents: boolean
+  hideNickAvatarEvents: boolean
+  privacyBlur: boolean
+  
+  // Notifications
+  showNotifications: boolean
+  isNotificationSounds: boolean
+  
+  // Features
+  developerTools: boolean
+  mobileGestures: boolean
+  rightSwipeAction: RightSwipeAction
+  // ...and more
+}
+```
+
+**Usage with Custom Hook**:
+```typescript
+import { useSetting } from '$state/hooks/settings'
+import { settingsAtom } from '$state/settings'
+
+function ThemeSetting() {
+  const [themeId, setThemeId] = useSetting(settingsAtom, 'themeId')
+  
+  return (
+    <select value={themeId} onChange={e => setThemeId(e.target.value)}>
+      <option value="dark">Dark</option>
+      <option value="light">Light</option>
+    </select>
+  )
+}
+```
+
+### Modal State (`modal.ts`)
+
+Global modal management:
+
+```typescript
+import { atom } from 'jotai'
+
+export type ModalState = 
+  | { type: 'image-viewer'; src: string }
+  | { type: 'user-profile'; userId: string }
+  | { type: 'room-settings'; roomId: string }
+  | null
+
+export const modalAtom = atom<ModalState>(null)
+```
+
+### Upload State (`upload.ts`)
+
+Tracks file upload progress:
+
+```typescript
+export type UploadStatus = 'idle' | 'uploading' | 'success' | 'error'
+
+export type Upload = {
+  file: File
+  roomId: string
+  status: UploadStatus
+  progress: number
+  error?: string
+}
+```
+
+## State Hooks
+
+Custom hooks in `src/app/state/hooks/` provide convenient state access:
+
+### Settings Hook (`hooks/settings.ts`)
+
+Provides granular setting updates:
+
+```typescript
+import { useSetting, useSetSetting } from '$state/hooks/settings'
+import { settingsAtom } from '$state/settings'
+
+// Read and write a single setting
+const [markdown, setMarkdown] = useSetting(settingsAtom, 'isMarkdown')
+
+// Write-only (more performant)
+const setTheme = useSetSetting(settingsAtom, 'themeId')
+setTheme('dark')
+// Or with updater function
+setTheme(prev => prev === 'dark' ? 'light' : 'dark')
+```
+
+### Room List Hook (`hooks/roomList.ts`)
+
+Manages room categorization and filtering:
+
+```typescript
+import { useRoomList } from '$state/hooks/roomList'
+
+const { 
+  rooms,           // All joined rooms
+  directs,         // Direct message rooms
+  spaces,          // Spaces
+  orphanRooms,     // Rooms not in any space
+} = useRoomList(mx)
+```
+
+### Unread Hook (`hooks/unread.ts`)
+
+Tracks unread messages and notifications:
+
+```typescript
+import { useUnreadInfo } from '$state/hooks/unread'
+
+const { 
+  unreadCount,
+  hasNotifications,
+  hasHighlights 
+} = useUnreadInfo(room)
+```
+
+## Persistence
+
+### Local Storage Integration
+
+The `atomWithLocalStorage` utility provides automatic persistence:
+
+```typescript
+// src/app/state/utils/atomWithLocalStorage.ts
+import { atom } from 'jotai'
+
+export const atomWithLocalStorage = <T>(
+  key: string,
+  initializer: (key: string) => T,
+  setter: (key: string, value: T) => void
+) => {
+  const baseAtom = atom<T>(initializer(key))
+  
+  return atom<T, [T], void>(
+    (get) => get(baseAtom),
+    (get, set, update) => {
+      set(baseAtom, update)
+      setter(key, update)
+    }
+  )
+}
+```
+
+**Usage**:
+```typescript
+const settingsAtom = atomWithLocalStorage<Settings>(
+  'settings',
+  (key) => getLocalStorageItem(key, defaultSettings),
+  (key, value) => setLocalStorageItem(key, value)
+)
+```
+
+## State Patterns
+
+### Derived State
+
+Use Jotai's built-in derivation:
+
+```typescript
+import { atom } from 'jotai'
+import { selectAtom } from 'jotai/utils'
+
+// Derive a subset of settings
+const themeSettingsAtom = selectAtom(
+  settingsAtom,
+  (settings) => ({
+    themeId: settings.themeId,
+    useSystemTheme: settings.useSystemTheme,
+    lightThemeId: settings.lightThemeId,
+    darkThemeId: settings.darkThemeId,
+  })
+)
+```
+
+### Async State
+
+Jotai supports async atoms naturally:
+
+```typescript
+const userProfileAtom = atom(async (get) => {
+  const userId = get(selectedUserIdAtom)
+  const response = await fetch(`/api/users/${userId}`)
+  return response.json()
+})
+```
+
+### Write-Only Atoms
+
+For actions that don't store state:
+
+```typescript
+const logoutAtom = atom(
+  null,  // No read value
+  async (get, set) => {
+    const session = get(activeSessionAtom)
+    await logoutClient(session)
+    set(sessionsAtom, { type: 'DELETE', session })
+    set(activeSessionIdAtom, undefined)
+  }
+)
+```
+
+## Matrix Client State
+
+While Jotai manages application state, Matrix SDK manages protocol state:
+
+- **Room events**: Stored in IndexedDB by matrix-js-sdk
+- **Sync state**: Managed by SDK's sync accumulator
+- **Crypto state**: Handled by Rust crypto implementation
+
+Sable bridges these with custom hooks (see [Components](/development/components)):
+
+```typescript
+import { useRoomEvent } from '$hooks/useRoomEvent'
+import { useStateEvent } from '$hooks/useStateEvent'
+
+// Subscribe to Matrix events reactively
+const name = useStateEvent(room, 'm.room.name')
+const latestMessage = useRoomEvent(room, 'm.room.message')
+```
+
+## Best Practices
+
+1. **Keep atoms focused**: One concern per atom
+2. **Use derived state**: Don't duplicate data
+3. **Leverage TypeScript**: Atoms infer types automatically
+4. **Prefer hooks**: Create custom hooks for complex state logic
+5. **Persist thoughtfully**: Only persist user preferences, not ephemeral state
+6. **Test isolation**: Atoms can be tested independently of components
+
+## Example: Creating New State
+
+To add new application state:
+
+1. **Create the atom file** in `src/app/state/`:
+
+```typescript
+// src/app/state/myFeature.ts
+import { atom } from 'jotai'
+
+export type MyFeatureState = {
+  enabled: boolean
+  options: string[]
+}
+
+const defaultState: MyFeatureState = {
+  enabled: false,
+  options: []
+}
+
+export const myFeatureAtom = atom<MyFeatureState>(defaultState)
+```
+
+2. **Create a hook** if needed:
+
+```typescript
+// src/app/state/hooks/myFeature.ts
+import { useAtom } from 'jotai'
+import { myFeatureAtom } from '$state/myFeature'
+
+export const useMyFeature = () => {
+  const [state, setState] = useAtom(myFeatureAtom)
+  
+  const enable = () => setState(s => ({ ...s, enabled: true }))
+  const disable = () => setState(s => ({ ...s, enabled: false }))
+  
+  return { ...state, enable, disable }
+}
+```
+
+3. **Use in components**:
+
+```typescript
+import { useMyFeature } from '$state/hooks/myFeature'
+
+function MyComponent() {
+  const { enabled, enable, disable } = useMyFeature()
+  
+  return (
+    <button onClick={enabled ? disable : enable}>
+      {enabled ? 'Disable' : 'Enable'}
+    </button>
+  )
+}
+```

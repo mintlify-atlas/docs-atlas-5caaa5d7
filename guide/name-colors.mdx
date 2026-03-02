@@ -1,0 +1,56 @@
+---
+title: Name Colors
+description: Customize how usernames are displayed with colorMXID support
+---
+
+Sable supports global name colors, allowing users to set custom colors for their display names across rooms and spaces.
+
+## Global Name Colors
+
+Global name colors were introduced in version 1.1.3. When enabled, Sable displays usernames with their configured colors throughout the interface, including:
+
+- Chat messages
+- Member lists
+- Pinned messages
+- User profiles
+
+## Enabling or Disabling Name Colors
+
+You can control whether name colors are displayed:
+
+1. Open **Settings**
+2. Navigate to the **Appearance** tab
+3. Toggle the **Global name colors** option
+
+When disabled, usernames will display in the default text color for your theme.
+
+## colorMXID Support
+
+Sable fully supports the colorMXID specification, which allows users to set custom colors for their display names using Matrix account data.
+
+### Color Hierarchy
+
+Colors are applied based on the following hierarchy (from highest to lowest priority):
+
+1. **Room color** - Color set specifically for a room (using `/color` command)
+2. **Space color** - Color set for a space (using `/gcolor` command)
+3. **Role color** - Color based on power level or room permissions
+4. **Default** - The theme's default text color
+
+### Setting Your Name Color
+
+If you have the appropriate permissions (power level 50 or higher), you can set your name color in a room or space:
+
+```
+/color #ff5733
+```
+
+For spaces:
+
+```
+/gcolor #3498db
+```
+
+<Note>
+Name colors set via these commands require the **Cosmetics** permission in the room or space settings.
+</Note>

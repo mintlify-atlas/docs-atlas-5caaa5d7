@@ -1,0 +1,102 @@
+---
+title: Message Layout Options
+description: Configure how messages are displayed in your chat rooms
+---
+
+Sable provides several options to customize how messages appear in your chat rooms, allowing you to create your preferred reading experience.
+
+## Bubble Layout
+
+Bubble layout displays messages in rounded containers, similar to modern messaging apps.
+
+### Enabling Bubble Layout
+
+1. Open **Settings**
+2. Navigate to the **Appearance** tab
+3. Enable **Bubble layout**
+
+Messages will now appear in bubble containers instead of the default flat layout.
+
+### Right-Aligned Own Messages
+
+Added in version 1.2.3, you can configure your own messages to appear on the right side when using bubble layout, creating a more familiar messaging app experience.
+
+**Before:**
+```
+┌─────────────────────────────────┐
+│ Alice: Hello!                   │
+│ You: Hi there!                  │
+│ Alice: How are you?             │
+└─────────────────────────────────┘
+```
+
+**After (with right-aligned own messages):**
+```
+┌─────────────────────────────────┐
+│ Alice: Hello!                   │
+│                  You: Hi there! │
+│ Alice: How are you?             │
+└─────────────────────────────────┘
+```
+
+To enable this option:
+
+1. Open **Settings**
+2. Navigate to the **Appearance** tab
+3. Enable **Bubble layout** (if not already enabled)
+4. Enable **Right-aligned own message bubbles**
+
+## Compact vs Normal View
+
+Choose between compact and normal message density:
+
+### Normal View
+Displays messages with comfortable spacing, showing full avatars and timestamps.
+
+### Compact View
+Reduces vertical spacing between messages, allowing you to see more messages on screen at once.
+
+To toggle compact view:
+
+1. Open **Settings**
+2. Navigate to the **Appearance** tab
+3. Enable or disable **Compact mode**
+
+## Hiding Member Events in Read-Only Rooms
+
+Added in version 1.1.7, this feature automatically hides join/leave events in announcement channels and other read-only rooms.
+
+### Why This is Useful
+
+In announcement channels or large public rooms, member events (joins, leaves, name changes) can make it difficult to read the actual announcements. This option hides those events to improve readability.
+
+**Before:**
+```
+Admin: Important update coming soon
+User123 joined the room
+User456 joined the room
+User789 left the room
+Admin: The update is now live!
+```
+
+**After (with member events hidden):**
+```
+Admin: Important update coming soon
+Admin: The update is now live!
+```
+
+### Enabling This Feature
+
+1. Open **Settings**
+2. Navigate to the **Appearance** tab
+3. Enable **Hide member events in read-only rooms**
+
+This option is **enabled by default** to improve the reading experience in announcement channels.
+
+<Note>
+This setting only affects rooms where you don't have permission to send messages. In regular chat rooms where you can participate, member events will still be displayed.
+</Note>
+
+## Message Hover Effects
+
+Sable highlights messages when you hover over them, making it easier to follow conversations. The currently hovered message will be slightly lighter than the background, helping you keep track of which message you're interacting with.
