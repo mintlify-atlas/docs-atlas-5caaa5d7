@@ -1,0 +1,126 @@
+{
+  "projectType": "saas",
+  "projectName": "Sable",
+  "projectDescription": "A Matrix client built to enhance user experience with quality-of-life features, cosmetics, and usability improvements.",
+  "theme": "palm",
+  "primaryColor": "#9b59b6",
+  "lightColor": "#bb8fce",
+  "darkColor": "#6c3483",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "installation"
+            ]
+          },
+          {
+            "group": "Self-Hosting",
+            "pages": [
+              "self-hosting/overview",
+              "self-hosting/docker",
+              "self-hosting/nginx",
+              "self-hosting/subdirectory"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "configuration/config-json",
+              "configuration/homeservers",
+              "configuration/featured-communities"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "User Guide",
+        "groups": [
+          {
+            "group": "Core Features",
+            "pages": [
+              "guide/rooms-and-spaces",
+              "guide/messages",
+              "guide/direct-messages",
+              "guide/calls",
+              "guide/widgets"
+            ]
+          },
+          {
+            "group": "Customization",
+            "pages": [
+              "guide/themes",
+              "guide/name-colors",
+              "guide/profile-customization",
+              "guide/message-layout"
+            ]
+          },
+          {
+            "group": "Settings",
+            "pages": [
+              "guide/account-settings",
+              "guide/notifications",
+              "guide/security",
+              "guide/appearance"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Development",
+        "groups": [
+          {
+            "group": "Contributing",
+            "pages": [
+              "development/contributing",
+              "development/local-development",
+              "development/building"
+            ]
+          },
+          {
+            "group": "Architecture",
+            "pages": [
+              "development/project-structure",
+              "development/state-management",
+              "development/components",
+              "development/matrix-sdk"
+            ]
+          },
+          {
+            "group": "Resources",
+            "pages": [
+              "development/changelog",
+              "development/license"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Enhanced Matrix messaging with quality-of-life improvements",
+    "Customizable themes and name colors",
+    "Profile banners and pronoun support",
+    "Improved media viewer with touch controls",
+    "Self-hosting support with Docker and nginx",
+    "End-to-end encryption (E2EE)",
+    "Voice and video calls via Element Call",
+    "Widget support for extended functionality",
+    "Multiple account switcher",
+    "Internationalization (i18n) support"
+  ],
+  "publicApiSurface": [
+    "config.json configuration",
+    "Docker deployment",
+    "Nginx reverse proxy setup",
+    "Custom homeserver configuration",
+    "Featured communities API",
+    "Theme customization",
+    "PWA manifest configuration"
+  ]
+}
